@@ -15,10 +15,8 @@
   },
   "homepage": "https://github.com/Noshin-03/dev-blog-backend#readme",
   "dependencies": {
-    "@prisma/client": "^6.19.3",
     "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "prisma": "^6.19.3"
+    "express": "^5.2.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
