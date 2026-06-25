@@ -1,5 +1,5 @@
 import express from "express";
-import healthRoute from "./routes/health_route.js";
+import healthRoute from "./routes/health_route";
 
 const app = express();
 

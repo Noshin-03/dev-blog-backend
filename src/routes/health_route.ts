@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { httpStatusCodes } from "../constants/statusCode.js";
+import { httpStatusCodes } from "../constants/statusCode";
 
 const router = Router();
 
