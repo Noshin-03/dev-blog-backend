@@ -3,7 +3,6 @@ export interface CreateUserDTO {
     name: string;
     email: string;
     role?: 'ADMIN' | 'USER';
-    joinDate?: Date;
 }
 
 export interface UserResponseDTO {
