@@ -7,24 +7,26 @@ export class UserRepository implements IUserRepository {
     constructor(private prisma: PrismaClient) {}
 
     async create(user: CreateUserDTO): Promise<UserResponseDTO> {
-        return this.prisma.user.create({ 
-            data: user 
+        return this.prisma.user.create({
+            data: user,
         });
     }
 
-    async findAll(paginationParams: PaginationParams): Promise<UserResponseDTO[]> {
+    async findAll(
+        paginationParams: PaginationParams,
+    ): Promise<UserResponseDTO[]> {
         const { page, limit } = paginationParams;
         return this.prisma.user.findMany({
             where: { isDeleted: false },
             orderBy: { joinDate: 'desc' },
             take: limit,
-            skip: (page - 1) * limit
+            skip: (page - 1) * limit,
         });
     }
 
     async findById(id: number): Promise<UserResponseDTO | null> {
         return this.prisma.user.findFirst({
-            where: { id, isDeleted: false }
+            where: { id, isDeleted: false },
         });
     }
 
@@ -38,13 +40,13 @@ export class UserRepository implements IUserRepository {
     async softDelete(id: number): Promise<UserResponseDTO | null> {
         return this.prisma.user.update({ 
             where: { id },
-            data: { isDeleted: true } 
+            data: { isDeleted: true },
         });
     }
 
     async getUserByEmail(email: string): Promise<UserResponseDTO | null> {
-        return this.prisma.user.findUnique({ 
-            where: { email } 
+        return this.prisma.user.findUnique({
+            where: { email },
         });
     }
 
