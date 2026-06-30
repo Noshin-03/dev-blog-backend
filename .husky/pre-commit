@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 npx lint-staged
+=======
+npm test
+npx lint-staged
+>>>>>>> b5c6b51 (feat: configure ESLint, Prettier, and Husky pre-commit hooks)
