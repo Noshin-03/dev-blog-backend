@@ -25,16 +25,16 @@ export const changePasswordSchema = z.object({
         oldPassword: z.string().min(1, 'Old password is required'),
         newPassword: z
             .string()
-            .min(8, 'New password must be at least 8 characters')
+            .min(8, 'Password must be at least 8 characters')
             .regex(
                 /[A-Z]/,
-                'New password must contain at least one uppercase letter',
+                'Password must contain at least one uppercase letter',
             )
             .regex(
                 /[a-z]/,
-                'New password must contain at least one lowercase letter',
+                'Password must contain at least one lowercase letter',
             )
-            .regex(/[0-9]/, 'New password must contain at least one number'),
+            .regex(/[0-9]/, 'Password must contain at least one number'),
     }),
 });
 
