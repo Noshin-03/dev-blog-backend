@@ -29,14 +29,6 @@ export class UserRepository implements IUserRepository {
     }
 
     async update(id: number, user: Partial<CreateUserDTO>): Promise<UserResponseDTO | null> {
-        const existing = await this.prisma.user.findFirst({ 
-            where: { id, isDeleted: false } 
-        });
-
-        if(!existing) {
-            return null;
-        }
-
         return this.prisma.user.update({ 
             where: { id }, 
             data: user 
@@ -44,14 +36,6 @@ export class UserRepository implements IUserRepository {
     }
 
     async softDelete(id: number): Promise<UserResponseDTO | null> {
-        const existing = await this.prisma.user.findFirst({ 
-            where: { id, isDeleted: false } 
-        });
-
-        if(!existing) {
-            return null;
-        }
-
         return this.prisma.user.update({ 
             where: { id },
             data: { isDeleted: true } 
@@ -64,7 +48,7 @@ export class UserRepository implements IUserRepository {
         });
     }
 
-    async getUserByUsernameALL(username: string): Promise<UserResponseDTO | null> {
+    async getUserByUsername(username: string): Promise<UserResponseDTO | null> {
         return this.prisma.user.findUnique({ 
             where: { username } 
         });
