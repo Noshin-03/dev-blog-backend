@@ -9,3 +9,8 @@ export enum httpStatusCodes {
     CONFLICT = 409,
     INTERNAL_SERVER_ERROR = 500
 }
+
+export enum paginationDefaults {
+    PAGE = 1,
+    LIMIT = 10,
+}
