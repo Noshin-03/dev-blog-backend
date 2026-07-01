@@ -8,5 +8,5 @@ export interface IUserRepository {
     update(id: number, user: Partial<CreateUserDTO>): Promise<UserResponseDTO | null>;
     softDelete(id: number): Promise<UserResponseDTO | null>;
     getUserByEmail(email: string): Promise<UserResponseDTO | null>;
-    getUserByUsernameALL(username: string): Promise<UserResponseDTO | null>;
+    getUserByUsername(username: string): Promise<UserResponseDTO | null>;
 }
