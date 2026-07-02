@@ -13,13 +13,13 @@ export class UserService {
             userRepository.getUserByUsername(data.username),
         ]);
 
-        if(existingEmail) {
+        if (existingEmail) {
             const error: any = new Error('Email already in use');
             error.statusCode = httpStatusCodes.CONFLICT;
             throw error;
         }
 
-        if(existingUsername) {
+        if (existingUsername) {
             const error: any = new Error('Username already in use');
             error.statusCode = httpStatusCodes.CONFLICT;
             throw error;
@@ -34,7 +34,7 @@ export class UserService {
 
     async getUserById(id: number) {
         const user = await userRepository.findById(id);
-        if(!user) {
+        if (!user) {
             const error: any = new Error('User not found');
             error.statusCode = httpStatusCodes.NOT_FOUND;
             throw error;
