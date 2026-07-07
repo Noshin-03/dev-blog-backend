@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { httpStatusCodes } from '../constants/statusCode';
-import { CustomErrorContent } from '../common';
+import { CustomErrorContent } from '../common/errorsClass';
 
 export const sendResponse = <T>(
     res: Response,

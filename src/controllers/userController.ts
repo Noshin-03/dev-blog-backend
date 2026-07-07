@@ -1,39 +1,49 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services/userService';
 import { asyncHandler } from '../utils/asyncHandler';
-import { httpStatusCodes, paginationDefaults } from '../constants/statusCode';
+import { httpStatusCodes } from '../constants/statusCode';
 import { sendResponse } from '../utils/response';
+import { CreateUserDTO, UpdateUserDTO } from '../dtos/userDTO';
+
+type UserParams = {
+    userId: string;
+};
+
+const getValidatedBody = <T>(req: Request): T => req.body as T;
+const getValidatedParams = <T extends Record<string, string>>(
+    req: Request,
+): T => req.params as T;
 
 const userService = new UserService();
 
 export const UserController = {
     createUser: asyncHandler(async (req: Request, res: Response) => {
-        const user = await userService.createUser(req.body);
+        const body = getValidatedBody<CreateUserDTO>(req);
+        const user = await userService.createUser(body);
         sendResponse(res, httpStatusCodes.CREATED, user);
     }),
 
-    getAllUsers: asyncHandler(async (req: Request, res: Response) => {
-        const page = Number(req.query.page) || paginationDefaults.PAGE;
-        const limit = Number(req.query.limit) || paginationDefaults.LIMIT;
-        const users = await userService.getAllUsers({ page, limit });
+    getAllUsers: asyncHandler(async (_req: Request, res: Response) => {
+        const users = await userService.getAllUsers();
         sendResponse(res, httpStatusCodes.OK, users);
     }),
 
     getUserById: asyncHandler(async (req: Request, res: Response) => {
-        const id = Number(req.params.userId);
-        const user = await userService.getUserById(id);
+        const { userId } = getValidatedParams<UserParams>(req);
+        const user = await userService.getUserById(userId);
         sendResponse(res, httpStatusCodes.OK, user);
     }),
 
     updateUser: asyncHandler(async (req: Request, res: Response) => {
-        const id = Number(req.params.userId);
-        const user = await userService.updateUser(id, req.body);
+        const { userId } = getValidatedParams<UserParams>(req);
+        const body = getValidatedBody<UpdateUserDTO>(req);
+        const user = await userService.updateUser(userId, body);
         sendResponse(res, httpStatusCodes.OK, user);
     }),
 
     deleteUser: asyncHandler(async (req: Request, res: Response) => {
-        const id = Number(req.params.userId);
-        await userService.softDeleteUser(id);
-        sendResponse(res, httpStatusCodes.OK, undefined, 'User deleted successfully');
+        const { userId } = getValidatedParams<UserParams>(req);
+        await userService.softDeleteUser(userId);
+        sendResponse(res, httpStatusCodes.OK, undefined);
     }),
 };

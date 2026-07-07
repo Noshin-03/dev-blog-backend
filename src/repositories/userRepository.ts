@@ -21,6 +21,30 @@ export class UserRepository {
         });
     }
 
+    async checkByUsername(username: string): Promise<boolean> {
+        const user = await this.prisma.user.findUnique({
+            where: { username },
+            select: { id: true },
+        });
+        return user !== null;
+    }
+
+    async checkByEmail(email: string): Promise<boolean> {
+        const user = await this.prisma.user.findUnique({
+            where: { email },
+            select: { id: true },
+        });
+        return user !== null;
+    }
+
+    async checkById(id: string): Promise<boolean> {
+        const user = await this.prisma.user.findUnique({
+            where: { id },
+            select: { id: true },
+        });
+        return user !== null;
+    }
+
     async update(id: string, user: UpdateUserDTO): Promise<User> {
         return this.prisma.user.update({
             where: { id },
@@ -33,13 +57,5 @@ export class UserRepository {
             where: { id },
             data: { isDeleted: true },
         });
-    }
-
-    async getUserByEmail(email: string): Promise<User | null> {
-        return this.prisma.user.findUnique({ where: { email } });
-    }
-
-    async getUserByUsername(username: string): Promise<User | null> {
-        return this.prisma.user.findUnique({ where: { username } });
     }
 }

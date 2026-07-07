@@ -3,7 +3,7 @@ import { UserController } from '../controllers/userController';
 import { asyncHandler } from '../utils/asyncHandler';
 import { validate } from '../middlewares/validate';
 import { createUserSchema, updateUserSchema } from '../schemas/userSchema';
-import { idParamSchema } from '../schemas/idSchema';
+import { idParamSchema } from '../schemas/userSchema';
 
 const router = Router();
 

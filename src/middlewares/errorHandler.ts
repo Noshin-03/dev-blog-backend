@@ -4,7 +4,11 @@ import {
     PrismaClientKnownRequestError,
     PrismaClientValidationError,
 } from '@prisma/client/runtime/library';
-import { AppError, ValidationError, DatabaseError } from '../common';
+import {
+    AppError,
+    ValidationError,
+    DatabaseError,
+} from '../common/errorsClass';
 import { logger } from '../utils/logger';
 import { httpStatusCodes } from '../constants/statusCode';
 import { sendError } from '../utils/response';

@@ -1,24 +1,19 @@
 import prisma from '../config/prisma';
 import { UserRepository } from '../repositories/userRepository';
 import { CreateUserDTO, UpdateUserDTO, UserResponseDTO } from '../dtos/userDTO';
-import { NotFoundError, ConflictError } from '../common';
+import { NotFoundError, ConflictError } from '../common/errorsClass';
+import { Messages } from '../constants/messages';
 
 const userRepository = new UserRepository(prisma);
 
 export class UserService {
     async createUser(data: CreateUserDTO): Promise<UserResponseDTO> {
-        const existingEmail = await userRepository.getUserByEmail(data.email);
-
-        if (existingEmail) {
-            throw new ConflictError('Email already in use');
+        if (await userRepository.checkByEmail(data.email)) {
+            throw new ConflictError(Messages.EMAIL_ALREADY_IN_USE);
         }
 
-        const existingUsername = await userRepository.getUserByUsername(
-            data.username,
-        );
-
-        if (existingUsername) {
-            throw new ConflictError('Username already in use');
+        if (await userRepository.checkByUsername(data.username)) {
+            throw new ConflictError(Messages.USERNAME_ALREADY_IN_USE);
         }
 
         const user = await userRepository.create(data);
@@ -36,7 +31,7 @@ export class UserService {
         const user = await userRepository.getUserById(id);
 
         if (!user) {
-            throw new NotFoundError('User not found');
+            throw new NotFoundError(Messages.USER_NOT_FOUND);
         }
 
         return new UserResponseDTO(user);
@@ -46,10 +41,10 @@ export class UserService {
         id: string,
         data: UpdateUserDTO,
     ): Promise<UserResponseDTO> {
-        const existingUser = await userRepository.getUserById(id);
+        const existingUser = await userRepository.checkById(id);
 
         if (!existingUser) {
-            throw new NotFoundError('User not found');
+            throw new NotFoundError(Messages.USER_NOT_FOUND);
         }
 
         const updated = await userRepository.update(id, data);
@@ -58,10 +53,10 @@ export class UserService {
     }
 
     async softDeleteUser(id: string): Promise<UserResponseDTO> {
-        const existingUser = await userRepository.getUserById(id);
+        const existingUser = await userRepository.checkById(id);
 
         if (!existingUser) {
-            throw new NotFoundError('User not found');
+            throw new NotFoundError(Messages.USER_NOT_FOUND);
         }
 
         const deleted = await userRepository.softDelete(id);

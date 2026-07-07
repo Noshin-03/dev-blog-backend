@@ -1,11 +1,13 @@
 import { z } from 'zod';
 import { createUserSchema } from './userSchema';
-
-const PASSWORD_MIN = 8;
+import { PasswordValidation } from '../constants/schemaConstants';
 
 const passwordSchema = z
     .string()
-    .min(PASSWORD_MIN, `Password must be at least ${PASSWORD_MIN} characters`)
+    .min(
+        PasswordValidation.MIN,
+        `Password must be at least ${PasswordValidation.MIN} characters`,
+    )
     .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
     .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
     .regex(/[0-9]/, 'Password must contain at least one number');
@@ -37,7 +39,3 @@ export const changePasswordSchema = z.object({
             path: ['newPassword'],
         }),
 });
-
-export type RegisterInput = z.infer<typeof registerSchema>['body'];
-export type LoginInput = z.infer<typeof loginSchema>['body'];
-export type ChangePasswordInput = z.infer<typeof changePasswordSchema>['body'];
