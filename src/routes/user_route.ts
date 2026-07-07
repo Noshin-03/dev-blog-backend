@@ -1,0 +1,32 @@
+import { Router } from 'express';
+import { UserController } from '../controllers/userController';
+import { asyncHandler } from '../utils/asyncHandler';
+import { validate } from '../middlewares/validate';
+import { createUserSchema, updateUserSchema } from '../schemas/userSchema';
+import { idParamSchema } from '../schemas/userSchema';
+
+const router = Router();
+
+router.post(
+    '/',
+    validate(createUserSchema),
+    asyncHandler(UserController.createUser),
+);
+router.get('/', asyncHandler(UserController.getAllUsers));
+router.get(
+    '/:userId',
+    validate(idParamSchema),
+    asyncHandler(UserController.getUserById),
+);
+router.patch(
+    '/:userId',
+    validate(updateUserSchema),
+    asyncHandler(UserController.updateUser),
+);
+router.delete(
+    '/:userId',
+    validate(idParamSchema),
+    asyncHandler(UserController.deleteUser),
+);
+
+export default router;
