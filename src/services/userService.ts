@@ -1,68 +1,71 @@
 import prisma from '../config/prisma';
 import { UserRepository } from '../repositories/userRepository';
-import { CreateUserDTO } from '../dtos/userDTO';
-import { PaginationParams } from '../schemas/querySchema';
-import { httpStatusCodes } from '../constants/statusCode';
+import { CreateUserDTO, UpdateUserDTO, UserResponseDTO } from '../dtos/userDTO';
+import { NotFoundError, ConflictError } from '../common';
 
 const userRepository = new UserRepository(prisma);
 
 export class UserService {
-    async createUser(data: CreateUserDTO) {
-        const [existingEmail, existingUsername] = await Promise.all([
-            userRepository.getUserByEmail(data.email),
-            userRepository.getUserByUsername(data.username),
-        ]);
+    async createUser(data: CreateUserDTO): Promise<UserResponseDTO> {
+        const existingEmail = await userRepository.getUserByEmail(data.email);
 
         if (existingEmail) {
-            const error: any = new Error('Email already in use');
-            error.statusCode = httpStatusCodes.CONFLICT;
-            throw error;
+            throw new ConflictError('Email already in use');
         }
+
+        const existingUsername = await userRepository.getUserByUsername(
+            data.username,
+        );
 
         if (existingUsername) {
-            const error: any = new Error('Username already in use');
-            error.statusCode = httpStatusCodes.CONFLICT;
-            throw error;
+            throw new ConflictError('Username already in use');
         }
 
-        return userRepository.create(data);
+        const user = await userRepository.create(data);
+
+        return new UserResponseDTO(user);
     }
 
-    async getAllUsers(paginationParams: PaginationParams) {
-        return userRepository.findAll(paginationParams);
+    async getAllUsers(): Promise<UserResponseDTO[]> {
+        const users = await userRepository.getAllUser();
+
+        return users.map((user) => new UserResponseDTO(user));
     }
 
-    async getUserById(id: number) {
-        const user = await userRepository.findById(id);
+    async getUserById(id: string): Promise<UserResponseDTO> {
+        const user = await userRepository.getUserById(id);
+
         if (!user) {
-            const error: any = new Error('User not found');
-            error.statusCode = httpStatusCodes.NOT_FOUND;
-            throw error;
+            throw new NotFoundError('User not found');
         }
-        return user;
+
+        return new UserResponseDTO(user);
     }
 
-    async updateUser(id: number, data: Partial<CreateUserDTO>) {
-        const existingUser = await userRepository.findById(id);
+    async updateUser(
+        id: string,
+        data: UpdateUserDTO,
+    ): Promise<UserResponseDTO> {
+        const existingUser = await userRepository.getUserById(id);
 
-        if(!existingUser) {
-            const error: any = new Error('User not found');
-            error.statusCode = httpStatusCodes.NOT_FOUND;
-            throw error;
+        if (!existingUser) {
+            throw new NotFoundError('User not found');
         }
 
-        return userRepository.update(id, data);
+        const updated = await userRepository.update(id, data);
+
+        return new UserResponseDTO(updated);
     }
 
-    async softDeleteUser(id: number) {
-        const existingUser = await userRepository.findById(id);
+    async softDeleteUser(id: string): Promise<UserResponseDTO> {
+        const existingUser = await userRepository.getUserById(id);
 
-        if(!existingUser) {
-            const error: any = new Error('User not found');
-            error.statusCode = httpStatusCodes.NOT_FOUND;
-            throw error;
+        if (!existingUser) {
+            throw new NotFoundError('User not found');
         }
 
-        return userRepository.softDelete(id);
+        const deleted = await userRepository.softDelete(id);
+
+        return new UserResponseDTO(deleted);
     }
 }

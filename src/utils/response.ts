@@ -1,23 +1,37 @@
 import { Response } from 'express';
 import { httpStatusCodes } from '../constants/statusCode';
+import { CustomErrorContent } from '../common';
 
 export const sendResponse = <T>(
     res: Response,
     statusCode: httpStatusCodes | number,
     data?: T,
-    message?: string
+    message?: string,
 ) => {
     const responseBody: { status: 'success'; data?: T; message?: string } = {
         status: 'success',
     };
 
-    if(data !== undefined) {
+    if (data !== undefined) {
         responseBody.data = data;
     }
 
-    if(message) {
+    if (message) {
         responseBody.message = message;
     }
 
     return res.status(statusCode).json(responseBody);
+};
+
+export const sendError = (
+    res: Response,
+    statusCode: httpStatusCodes | number,
+    errors: CustomErrorContent[],
+    stack?: string,
+) => {
+    return res.status(statusCode).json({
+        status: 'error',
+        errors,
+        ...(stack && { stack }),
+    });
 };
