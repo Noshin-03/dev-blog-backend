@@ -25,6 +25,7 @@ model User {
   isDeleted Boolean  @default(false)
 
   auth      Auth?
+  stories   Story[]
 
   @@map("users")
 }
@@ -37,4 +38,17 @@ model Auth {
   user User @relation(fields: [userId], references: [id])
 
   @@map("auth")
+}
+
+model Story {
+  storyId   String   @id @default(uuid())
+  userId    String
+  title     String
+  body      String   
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("stories")
 }
