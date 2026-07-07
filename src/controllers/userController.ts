@@ -3,6 +3,16 @@ import { UserService } from '../services/userService';
 import { asyncHandler } from '../utils/asyncHandler';
 import { httpStatusCodes } from '../constants/statusCode';
 import { sendResponse } from '../utils/response';
+import { CreateUserDTO, UpdateUserDTO } from '../dtos/userDTO';
+
+type UserParams = {
+    userId: string;
+};
+
+const getValidatedBody = <T>(req: Request): T => req.body as T;
+const getValidatedParams = <T extends Record<string, string>>(
+    req: Request,
+): T => req.params as T;
 
 const userService = new UserService();
 
