@@ -3,6 +3,7 @@ import { UserRepository } from '../repositories/userRepository';
 import { CreateUserDTO, UpdateUserDTO, UserResponseDTO } from '../dtos/userDTO';
 import { NotFoundError, ConflictError } from '../common/errorsClass';
 import { Messages } from '../constants/messages';
+import { UserQueryParams } from '../schemas/querySchema';
 
 const userRepository = new UserRepository(prisma);
 
@@ -21,8 +22,8 @@ export class UserService {
         return new UserResponseDTO(user);
     }
 
-    async getAllUsers(): Promise<UserResponseDTO[]> {
-        const users = await userRepository.getAllUser();
+    async getAllUsers(params: UserQueryParams): Promise<UserResponseDTO[]> {
+        const users = await userRepository.getAllUser(params);
 
         return users.map((user) => new UserResponseDTO(user));
     }

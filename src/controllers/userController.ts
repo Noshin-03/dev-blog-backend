@@ -4,6 +4,7 @@ import { asyncHandler } from '../utils/asyncHandler';
 import { httpStatusCodes } from '../constants/statusCode';
 import { sendResponse } from '../utils/response';
 import { CreateUserDTO, UpdateUserDTO } from '../dtos/userDTO';
+import { UserQueryParams } from '../schemas/querySchema';
 
 type UserParams = {
     userId: string;
@@ -22,8 +23,9 @@ export const UserController = {
         sendResponse(res, httpStatusCodes.CREATED, user);
     }),
 
-    getAllUsers: asyncHandler(async (_req, res: Response) => {
-        const users = await userService.getAllUsers();
+    getAllUsers: asyncHandler(async (req: Request, res: Response) => {
+        const query = req.query as unknown as UserQueryParams;
+        const users = await userService.getAllUsers(query);
         sendResponse(res, httpStatusCodes.OK, users);
     }),
 

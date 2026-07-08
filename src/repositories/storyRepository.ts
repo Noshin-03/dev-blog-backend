@@ -1,5 +1,6 @@
 import { PrismaClient, Story } from '@prisma/client';
 import { CreateStoryDTO, UpdateStoryDTO } from '../dtos/storyDTO';
+import { StoryQueryParams } from '../schemas/querySchema';
 
 export class StoryRepository {
     constructor(private prisma: PrismaClient) {}
@@ -8,9 +9,26 @@ export class StoryRepository {
         return this.prisma.story.create({ data });
     }
 
-    async findAll(): Promise<Story[]> {
+    async findAll(params: StoryQueryParams): Promise<Story[]> {
+        const { page, itemsPerPage, title, author, createdAt, orderBy } =
+            params;
+
         return this.prisma.story.findMany({
-            orderBy: { createdAt: 'desc' },
+            where: {
+                ...(title && {
+                    title: { contains: title, mode: 'insensitive' },
+                }),
+                ...(author && {
+                    user: { name: { contains: author, mode: 'insensitive' } },
+                }),
+                ...(createdAt && {
+                    createdAt: { gte: new Date(createdAt) },
+                }),
+            },
+            include: { user: { select: { name: true, username: true } } },
+            orderBy: { [orderBy ?? 'createdAt']: 'desc' },
+            take: itemsPerPage,
+            skip: (page - 1) * itemsPerPage,
         });
     }
 
