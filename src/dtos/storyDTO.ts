@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Story } from '@prisma/client';
+import { Story, User } from '@prisma/client';
 import { createStorySchema, updateStorySchema } from '../schemas/storySchema';
 
 export type CreateStoryDTO = z.infer<typeof createStorySchema>['body'];
