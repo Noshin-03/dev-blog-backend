@@ -23,7 +23,7 @@ router.get(
 );
 router.get(
     '/:userId',
-    validate(idParamSchema),
+    validate(idSchema),
     asyncHandler(UserController.getUserById),
 );
 router.patch(
@@ -33,7 +33,7 @@ router.patch(
 );
 router.delete(
     '/:userId',
-    validate(idParamSchema),
+    validate(idSchema),
     asyncHandler(UserController.deleteUser),
 );
 
