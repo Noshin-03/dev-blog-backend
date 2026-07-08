@@ -4,6 +4,7 @@ import { asyncHandler } from '../utils/asyncHandler';
 import { validate } from '../middlewares/validate';
 import { createUserSchema, updateUserSchema } from '../schemas/userSchema';
 import { idSchema } from '../schemas/idSchema';
+import { userQuerySchema } from '../schemas/querySchema';
 
 const router = Router();
 
@@ -12,7 +13,11 @@ router.post(
     validate(createUserSchema),
     asyncHandler(UserController.createUser),
 );
-router.get('/', asyncHandler(UserController.getAllUsers));
+router.get(
+    '/',
+    validate(userQuerySchema),
+    asyncHandler(UserController.getAllUsers),
+);
 router.get(
     '/:userId',
     validate(idSchema),
