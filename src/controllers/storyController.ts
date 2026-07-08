@@ -5,6 +5,7 @@ import { httpStatusCodes } from '../constants/statusCode';
 import { sendResponse } from '../utils/response';
 import { CreateStoryDTO, UpdateStoryDTO } from '../dtos/storyDTO';
 import { Messages } from '../constants/messages';
+import { StoryQueryParams } from '../schemas/querySchema';
 
 type StoryParams = { id: string };
 
@@ -22,8 +23,9 @@ export const StoryController = {
         sendResponse(res, httpStatusCodes.CREATED, story);
     }),
 
-    getAllStories: asyncHandler(async (_req: Request, res: Response) => {
-        const stories = await storyService.getAllStories();
+    getAllStories: asyncHandler(async (req: Request, res: Response) => {
+        const query = req.query as unknown as StoryQueryParams;
+        const stories = await storyService.getAllStories(query);
         sendResponse(res, httpStatusCodes.OK, stories);
     }),
 

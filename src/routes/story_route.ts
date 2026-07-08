@@ -4,6 +4,7 @@ import { asyncHandler } from '../utils/asyncHandler';
 import { validate } from '../middlewares/validate';
 import { createStorySchema, updateStorySchema } from '../schemas/storySchema';
 import { idSchema } from '../schemas/idSchema';
+import { storyQuerySchema } from '../schemas/querySchema';
 
 const router = Router();
 
@@ -12,7 +13,11 @@ router.post(
     validate(createStorySchema),
     asyncHandler(StoryController.createStory),
 );
-router.get('/', asyncHandler(StoryController.getAllStories));
+router.get(
+    '/',
+    validate(storyQuerySchema),
+    asyncHandler(StoryController.getAllStories),
+);
 router.get(
     '/:storyId',
     validate(idSchema),
