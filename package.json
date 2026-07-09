@@ -47,12 +47,6 @@
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "typecheck": "tsc --noEmit"
-<<<<<<< HEAD
-    },
-    "prisma": {
-        "seed": "tsx prisma/seed.ts"
-=======
->>>>>>> 8655cae (refactor: store validated request data in middleware)
     },
     "prisma": {
         "seed": "tsx prisma/seed.ts"
