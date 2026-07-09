@@ -48,6 +48,9 @@
         "format:check": "prettier --check .",
         "typecheck": "tsc --noEmit"
     },
+    "prisma": {
+        "seed": "tsx prisma/seed.ts"
+    },
     "lint-staged": {
         "*.ts": [
             "eslint --fix",

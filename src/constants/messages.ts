@@ -9,6 +9,6 @@ export enum Messages {
     TOKEN_REQUIRED = 'Authentication token is required',
     TOKEN_INVALID = 'Invalid or expired token',
     ADMIN_ONLY = 'Admin access required',
-    FORBIDDEN = 'You do not have permission to perform this action',
     CHANGED = 'Password changed successfully',
+    UNAUTHORIZED = 'You do not have permission to perform this action',
 }

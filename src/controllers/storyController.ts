@@ -30,13 +30,13 @@ export const StoryController = {
     updateStory: asyncHandler(async (req, res) => {
         const { storyId } = getParams<{ storyId: string }>(req);
         const body = getBody<UpdateStoryDTO>(req);
-        const story = await storyService.updateStory(storyId, body);
+        const story = await storyService.updateStory(storyId, body, req.user);
         sendResponse(res, httpStatusCodes.OK, story);
     }),
 
     deleteStory: asyncHandler(async (req, res) => {
         const { storyId } = getParams<{ storyId: string }>(req);
-        await storyService.deleteStory(storyId);
+        await storyService.deleteStory(storyId, req.user);
 
         sendResponse(res, httpStatusCodes.OK, undefined);
     }),
