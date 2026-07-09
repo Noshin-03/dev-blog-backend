@@ -1,50 +1,41 @@
-import { Request, Response } from 'express';
 import { UserService } from '../services/userService';
 import { asyncHandler } from '../utils/asyncHandler';
 import { httpStatusCodes } from '../constants/statusCode';
 import { sendResponse } from '../utils/response';
 import { CreateUserDTO, UpdateUserDTO } from '../dtos/userDTO';
 import { UserQueryParams } from '../schemas/querySchema';
-
-type UserParams = {
-    userId: string;
-};
-
-const getValidatedBody = <T>(req: Request): T => req.body as T;
-const getValidatedParams = <T extends Record<string, string>>(
-    req: Request,
-): T => req.params as T;
+import { getBody, getParams, getQuery } from '../utils/request';
 
 const userService = new UserService();
 
 export const UserController = {
-    createUser: asyncHandler(async (req: Request, res: Response) => {
-        const body = getValidatedBody<CreateUserDTO>(req);
+    createUser: asyncHandler(async (req, res) => {
+        const body = getBody<CreateUserDTO>(req);
         const user = await userService.createUser(body);
         sendResponse(res, httpStatusCodes.CREATED, user);
     }),
 
-    getAllUsers: asyncHandler(async (req: Request, res: Response) => {
-        const query = req.query as unknown as UserQueryParams;
+    getAllUsers: asyncHandler(async (req, res) => {
+        const query = getQuery<UserQueryParams>(req);
         const users = await userService.getAllUsers(query);
         sendResponse(res, httpStatusCodes.OK, users);
     }),
 
-    getUserById: asyncHandler(async (req: Request, res: Response) => {
-        const { userId } = getValidatedParams<UserParams>(req);
+    getUserById: asyncHandler(async (req, res) => {
+        const { userId } = getParams<{ userId: string }>(req);
         const user = await userService.getUserById(userId);
         sendResponse(res, httpStatusCodes.OK, user);
     }),
 
-    updateUser: asyncHandler(async (req: Request, res: Response) => {
-        const { userId } = getValidatedParams<UserParams>(req);
-        const body = getValidatedBody<UpdateUserDTO>(req);
+    updateUser: asyncHandler(async (req, res) => {
+        const { userId } = getParams<{ userId: string }>(req);
+        const body = getBody<UpdateUserDTO>(req);
         const user = await userService.updateUser(userId, body);
         sendResponse(res, httpStatusCodes.OK, user);
     }),
 
-    deleteUser: asyncHandler(async (req: Request, res: Response) => {
-        const { userId } = getValidatedParams<UserParams>(req);
+    deleteUser: asyncHandler(async (req, res) => {
+        const { userId } = getParams<{ userId: string }>(req);
         await userService.softDeleteUser(userId);
         sendResponse(res, httpStatusCodes.OK, undefined);
     }),

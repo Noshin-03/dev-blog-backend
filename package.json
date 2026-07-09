@@ -41,7 +41,8 @@
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "format": "prettier --write .",
-        "format:check": "prettier --check ."
+        "format:check": "prettier --check .",
+        "typecheck": "tsc --noEmit"
     },
     "lint-staged": {
         "*.ts": [

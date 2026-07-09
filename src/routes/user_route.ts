@@ -2,8 +2,11 @@ import { Router } from 'express';
 import { UserController } from '../controllers/userController';
 import { asyncHandler } from '../utils/asyncHandler';
 import { validate } from '../middlewares/validate';
-import { createUserSchema, updateUserSchema } from '../schemas/userSchema';
-import { idSchema } from '../schemas/idSchema';
+import {
+    createUserSchema,
+    updateUserSchema,
+    userIdParamSchema,
+} from '../schemas/userSchema';
 import { userQuerySchema } from '../schemas/querySchema';
 
 const router = Router();
@@ -20,7 +23,7 @@ router.get(
 );
 router.get(
     '/:userId',
-    validate(idSchema),
+    validate(userIdParamSchema),
     asyncHandler(UserController.getUserById),
 );
 router.patch(
@@ -30,7 +33,7 @@ router.patch(
 );
 router.delete(
     '/:userId',
-    validate(idSchema),
+    validate(userIdParamSchema),
     asyncHandler(UserController.deleteUser),
 );
 
