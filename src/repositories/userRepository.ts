@@ -1,58 +1,61 @@
-import { PrismaClient } from '@prisma/client';
-import { IUserRepository } from '../interfaces/userInterface';
-import { CreateUserDTO, UserResponseDTO } from '../dtos/userDTO';
-import { PaginationParams } from '../schemas/querySchema';
+import { PrismaClient, User } from '@prisma/client';
+import { CreateUserDTO, UpdateUserDTO } from '../dtos/userDTO';
 
-export class UserRepository implements IUserRepository {
+export class UserRepository {
     constructor(private prisma: PrismaClient) {}
 
-    async create(user: CreateUserDTO): Promise<UserResponseDTO> {
-        return this.prisma.user.create({
-            data: user,
-        });
+    async create(user: CreateUserDTO): Promise<User> {
+        return this.prisma.user.create({ data: user });
     }
 
-    async findAll(
-        paginationParams: PaginationParams,
-    ): Promise<UserResponseDTO[]> {
-        const { page, limit } = paginationParams;
+    async getAllUser(): Promise<User[]> {
         return this.prisma.user.findMany({
             where: { isDeleted: false },
             orderBy: { joinDate: 'desc' },
-            take: limit,
-            skip: (page - 1) * limit,
         });
     }
 
-    async findById(id: number): Promise<UserResponseDTO | null> {
+    async getUserById(id: string): Promise<User | null> {
         return this.prisma.user.findFirst({
             where: { id, isDeleted: false },
         });
     }
 
-    async update(id: number, user: Partial<CreateUserDTO>): Promise<UserResponseDTO | null> {
-        return this.prisma.user.update({ 
-            where: { id }, 
-            data: user 
+    async checkByUsername(username: string): Promise<boolean> {
+        const user = await this.prisma.user.findUnique({
+            where: { username },
+            select: { id: true },
+        });
+        return user !== null;
+    }
+
+    async checkByEmail(email: string): Promise<boolean> {
+        const user = await this.prisma.user.findUnique({
+            where: { email },
+            select: { id: true },
+        });
+        return user !== null;
+    }
+
+    async checkById(id: string): Promise<boolean> {
+        const user = await this.prisma.user.findUnique({
+            where: { id },
+            select: { id: true },
+        });
+        return user !== null;
+    }
+
+    async update(id: string, user: UpdateUserDTO): Promise<User> {
+        return this.prisma.user.update({
+            where: { id },
+            data: user,
         });
     }
 
-    async softDelete(id: number): Promise<UserResponseDTO | null> {
-        return this.prisma.user.update({ 
+    async softDelete(id: string): Promise<User> {
+        return this.prisma.user.update({
             where: { id },
             data: { isDeleted: true },
-        });
-    }
-
-    async getUserByEmail(email: string): Promise<UserResponseDTO | null> {
-        return this.prisma.user.findUnique({
-            where: { email },
-        });
-    }
-
-    async getUserByUsername(username: string): Promise<UserResponseDTO | null> {
-        return this.prisma.user.findUnique({ 
-            where: { username } 
         });
     }
 }
