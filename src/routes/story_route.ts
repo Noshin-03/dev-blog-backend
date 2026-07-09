@@ -9,6 +9,7 @@ import {
 } from '../schemas/storySchema';
 import { storyQuerySchema } from '../schemas/querySchema';
 import { authenticate } from '../middlewares/authenticate';
+import { requireOwnerOrAdmin } from '../middlewares/authorize';
 
 const router = Router();
 
@@ -31,12 +32,14 @@ router.get(
 router.patch(
     '/:storyId',
     authenticate,
+    requireOwnerOrAdmin('userId'),
     validate(updateStorySchema),
     asyncHandler(StoryController.updateStory),
 );
 router.delete(
     '/:storyId',
     authenticate,
+    requireOwnerOrAdmin('userId'),
     validate(storyIdParamSchema),
     asyncHandler(StoryController.deleteStory),
 );

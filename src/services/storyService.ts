@@ -6,8 +6,10 @@ import {
     StoryResponseDTO,
 } from '../dtos/storyDTO';
 import { Messages } from '../constants/messages';
-import { NotFoundError } from '../common/errorsClass';
+import { NotFoundError, UnauthorizedError } from '../common/errorsClass';
 import { StoryQueryParams } from '../schemas/querySchema';
+import { JwtPayload } from '../utils/jwt';
+import { Role } from '@prisma/client';
 
 const storyRepository = new StoryRepository(prisma);
 
@@ -33,20 +35,37 @@ export class StoryService {
     async updateStory(
         id: string,
         data: UpdateStoryDTO,
+        requestingUser: JwtPayload,
     ): Promise<StoryResponseDTO> {
-        const exists = await storyRepository.checkById(id);
-        if (!exists) {
+        const story = await storyRepository.getById(id);
+        if (!story) {
             throw new NotFoundError(Messages.STORY_NOT_FOUND);
         }
+
+        const isOwner = story.userId === requestingUser.userId;
+        const isAdmin = requestingUser.role === Role.ADMIN;
+
+        if (!isOwner && !isAdmin) {
+            throw new UnauthorizedError(Messages.UNAUTHORIZED);
+        }
+
         const updated = await storyRepository.update(id, data);
         return new StoryResponseDTO(updated);
     }
 
-    async deleteStory(id: string): Promise<void> {
-        const exists = await storyRepository.checkById(id);
-        if (!exists) {
+    async deleteStory(id: string, requestingUser: JwtPayload): Promise<void> {
+        const story = await storyRepository.getById(id);
+        if (!story) {
             throw new NotFoundError(Messages.STORY_NOT_FOUND);
         }
+
+        const isOwner = story.userId === requestingUser.userId;
+        const isAdmin = requestingUser.role === Role.ADMIN;
+
+        if (!isOwner && !isAdmin) {
+            throw new UnauthorizedError(Messages.UNAUTHORIZED);
+        }
+
         await storyRepository.delete(id);
     }
 }
