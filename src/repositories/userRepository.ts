@@ -1,6 +1,19 @@
-import { PrismaClient, User } from '@prisma/client';
+import { Prisma, PrismaClient, User } from '@prisma/client';
 import { CreateUserDTO, UpdateUserDTO } from '../dtos/userDTO';
 import { UserQueryParams } from '../schemas/querySchema';
+
+const getUserWhere = (params: UserQueryParams): Prisma.UserWhereInput => {
+    const { username, email } = params;
+    return {
+        ...(username && {
+            username: { contains: username, mode: 'insensitive' },
+        }),
+        ...(email && {
+            email: { contains: email, mode: 'insensitive' },
+        }),
+        isDeleted: false,
+    };
+};
 
 export class UserRepository {
     constructor(private prisma: PrismaClient) {}
@@ -10,15 +23,10 @@ export class UserRepository {
     }
 
     async getAllUser(params: UserQueryParams): Promise<User[]> {
-        const { page, itemsPerPage, name, email, orderBy } = params;
+        const { page, itemsPerPage, orderBy } = params;
+        const where = getUserWhere(params);
         return this.prisma.user.findMany({
-            where: {
-                isDeleted: false,
-                ...(name && { name: { contains: name, mode: 'insensitive' } }),
-                ...(email && {
-                    email: { contains: email, mode: 'insensitive' },
-                }),
-            },
+            where,
             orderBy: { [orderBy ?? 'joinDate']: 'desc' },
             take: itemsPerPage,
             skip: (page - 1) * itemsPerPage,

@@ -5,15 +5,7 @@ import { httpStatusCodes } from '../constants/statusCode';
 import { sendResponse } from '../utils/response';
 import { CreateUserDTO, UpdateUserDTO } from '../dtos/userDTO';
 import { UserQueryParams } from '../schemas/querySchema';
-
-type UserParams = {
-    userId: string;
-};
-
-const getValidatedBody = <T>(req: Request): T => req.body as T;
-const getValidatedParams = <T extends Record<string, string>>(
-    req: Request,
-): T => req.params as T;
+import { getBody, getParams, getQuery } from '../utils/request';
 
 const userService = new UserService();
 
@@ -23,8 +15,8 @@ export const UserController = {
         sendResponse(res, httpStatusCodes.CREATED, user);
     }),
 
-    getAllUsers: asyncHandler(async (req: Request, res: Response) => {
-        const query = req.query as unknown as UserQueryParams;
+    getAllUsers: asyncHandler(async (req, res) => {
+        const query = getQuery<UserQueryParams>(req);
         const users = await userService.getAllUsers(query);
         sendResponse(res, httpStatusCodes.OK, users);
     }),
