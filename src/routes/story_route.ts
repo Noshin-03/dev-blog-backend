@@ -8,6 +8,7 @@ import {
     storyIdParamSchema,
 } from '../schemas/storySchema';
 import { storyQuerySchema } from '../schemas/querySchema';
+import { authenticate } from '../middlewares/authenticate';
 
 const router = Router();
 
@@ -23,16 +24,19 @@ router.get(
 );
 router.get(
     '/:storyId',
+    authenticate,
     validate(storyIdParamSchema),
     asyncHandler(StoryController.getStoryById),
 );
 router.patch(
     '/:storyId',
+    authenticate,
     validate(updateStorySchema),
     asyncHandler(StoryController.updateStory),
 );
 router.delete(
     '/:storyId',
+    authenticate,
     validate(storyIdParamSchema),
     asyncHandler(StoryController.deleteStory),
 );

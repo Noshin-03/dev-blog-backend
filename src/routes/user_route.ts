@@ -8,6 +8,7 @@ import {
     userIdParamSchema,
 } from '../schemas/userSchema';
 import { userQuerySchema } from '../schemas/querySchema';
+import { authenticate } from '../middlewares/authenticate';
 
 const router = Router();
 
@@ -18,21 +19,25 @@ router.post(
 );
 router.get(
     '/',
+    authenticate,
     validate(userQuerySchema),
     asyncHandler(UserController.getAllUsers),
 );
 router.get(
     '/:userId',
+    authenticate,
     validate(userIdParamSchema),
     asyncHandler(UserController.getUserById),
 );
 router.patch(
     '/:userId',
+    authenticate,
     validate(updateUserSchema),
     asyncHandler(UserController.updateUser),
 );
 router.delete(
     '/:userId',
+    authenticate,
     validate(userIdParamSchema),
     asyncHandler(UserController.deleteUser),
 );
