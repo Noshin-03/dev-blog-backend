@@ -6,6 +6,7 @@ import {
     registerSchema,
     loginSchema,
     confirmEmailSchema,
+    resendVerificationSchema,
 } from '../schemas/authSchema';
 
 const router = Router();
@@ -24,6 +25,12 @@ router.get(
     '/confirm-email/:token',
     validate(confirmEmailSchema),
     asyncHandler(AuthController.confirmEmail),
+);
+
+router.post(
+    '/resend-verification',
+    validate(resendVerificationSchema),
+    asyncHandler(AuthController.resendVerification),
 );
 
 export default router;

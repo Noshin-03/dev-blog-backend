@@ -16,4 +16,6 @@ export enum Messages {
     INVALID_VERIFICATION_LINK = 'Invalid verification link',
     EMAIL_VERIFIED = 'Verification complete',
     VERIFICATION_EMAIL_SENT = 'If that email exists, a verification link has been sent',
+    EMAIL_ALREADY_VERIFIED = 'Email is already verified',
+    TOO_MANY_CONFIRMATION_REQUESTS = 'Too many request from same address',
 }
