@@ -39,3 +39,9 @@ export const changePasswordSchema = z.object({
             path: ['newPassword'],
         }),
 });
+
+export const confirmEmailSchema = z.object({
+    params: z.object({
+        token: z.string().min(1, 'Token is required'),
+    }),
+});
