@@ -13,6 +13,7 @@ import { UserService } from './userService';
 import { AccountRepository } from '../repositories/accountRepository';
 import { signEmailToken, verifyEmailToken } from '../utils/jwt';
 import { sendVerificationEmail } from '../utils/mailer';
+import { consumeToken } from '../utils/rateLimiter';
 
 const SALT_ROUNDS = 10;
 
@@ -155,6 +156,30 @@ export class AuthService {
 
         return {
             message: Messages.EMAIL_VERIFIED,
+        };
+    }
+
+    async resendVerification(email: string) {
+        const user = await userService.getUserByEmail(email);
+
+        if (!user) {
+            throw new UnauthorizedError(Messages.USER_NOT_FOUND);
+        }
+
+        if (user.isVerified) {
+            throw new ValidationError(Messages.EMAIL_ALREADY_VERIFIED);
+        }
+
+        if (!consumeToken(user.email)) {
+            throw new ValidationError(Messages.TOO_MANY_CONFIRMATION_REQUESTS);
+        }
+
+        const emailToken = signEmailToken(user.id);
+
+        await sendVerificationEmail(user.email, emailToken);
+
+        return {
+            message: Messages.VERIFICATION_EMAIL_SENT,
         };
     }
 }
