@@ -23,6 +23,7 @@ model User {
   joinDate  DateTime @default(now())
   role      Role     @default(USER)
   isDeleted Boolean  @default(false)
+  isVerified Boolean @default(false)
 
   auth      Auth?
   stories   Story[]

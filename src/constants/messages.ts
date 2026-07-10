@@ -11,4 +11,9 @@ export enum Messages {
     ADMIN_ONLY = 'Admin access required',
     CHANGED = 'Password changed successfully',
     UNAUTHORIZED = 'You do not have permission to perform this action',
+    EMAIL_NOT_VERIFIED = 'Please verify your email before logging in',
+    VERIFICATION_LINK_EXPIRED = 'Verification link has expired. Please request a new one.',
+    INVALID_VERIFICATION_LINK = 'Invalid verification link',
+    EMAIL_VERIFIED = 'Verification complete',
+    VERIFICATION_EMAIL_SENT = 'If that email exists, a verification link has been sent',
 }

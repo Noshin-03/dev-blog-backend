@@ -9,6 +9,11 @@ export interface JwtPayload {
     role: Role;
 }
 
+export interface EmailTokenPayload {
+    userId: string;
+    purpose: 'email-verification';
+}
+
 export const signToken = (payload: JwtPayload): string => {
     return jwt.sign(payload, env.JWT_SECRET, {
         expiresIn: env.JWT_EXPIRATION,
@@ -17,4 +22,16 @@ export const signToken = (payload: JwtPayload): string => {
 
 export const verifyToken = (token: string): JwtPayload => {
     return jwt.verify(token, env.JWT_SECRET) as JwtPayload;
+};
+
+export const signEmailToken = (userId: string): string => {
+    return jwt.sign(
+        { userId, purpose: 'email-verification' },
+        env.EMAIL_JWT_SECRET,
+        { expiresIn: '24h' },
+    );
+};
+
+export const verifyEmailToken = (token: string): EmailTokenPayload => {
+    return jwt.verify(token, env.EMAIL_JWT_SECRET) as EmailTokenPayload;
 };
