@@ -2,8 +2,11 @@ import { Router } from 'express';
 import { StoryController } from '../controllers/storyController';
 import { asyncHandler } from '../utils/asyncHandler';
 import { validate } from '../middlewares/validate';
-import { createStorySchema, updateStorySchema } from '../schemas/storySchema';
-import { idSchema } from '../schemas/idSchema';
+import {
+    createStorySchema,
+    updateStorySchema,
+    storyIdParamSchema,
+} from '../schemas/storySchema';
 
 const router = Router();
 
@@ -15,7 +18,7 @@ router.post(
 router.get('/', asyncHandler(StoryController.getAllStories));
 router.get(
     '/:storyId',
-    validate(idSchema),
+    validate(storyIdParamSchema),
     asyncHandler(StoryController.getStoryById),
 );
 router.patch(
@@ -25,7 +28,7 @@ router.patch(
 );
 router.delete(
     '/:storyId',
-    validate(idSchema),
+    validate(storyIdParamSchema),
     asyncHandler(StoryController.deleteStory),
 );
 
