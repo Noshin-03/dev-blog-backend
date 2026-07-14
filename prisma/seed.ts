@@ -22,7 +22,25 @@ async function main() {
             },
         },
     });
+    const categories = await Promise.all(
+        [
+            'Technology',
+            'Lifestyle',
+            'Business',
+            'Education',
+            'Entertainment',
+            'Health',
+            'Travel',
+        ].map((name) =>
+            prisma.category.upsert({
+                where: { name },
+                update: {},
+                create: { name },
+            }),
+        ),
+    );
 
+    console.log(`Created ${categories.length} categories`);
     console.log(`Admin created: ${admin.email}`);
     console.log(`Usrename: ${admin.username}`);
 }

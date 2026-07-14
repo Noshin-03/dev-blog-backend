@@ -1,12 +1,13 @@
 import { z } from 'zod';
-import { Story, User } from '@prisma/client';
+import { Story, StoryCategory, Category } from '@prisma/client';
 import { createStorySchema, updateStorySchema } from '../schemas/storySchema';
 
 export type CreateStoryDTO = z.infer<typeof createStorySchema>['body'];
 export type UpdateStoryDTO = z.infer<typeof updateStorySchema>['body'];
 
-type StoryWithAuthor = Story & {
+type StoryWithRelations = Story & {
     user?: { name: string; username: string } | null;
+    categories?: (StoryCategory & { category: Category })[];
 };
 
 export class StoryResponseDTO {
@@ -17,8 +18,9 @@ export class StoryResponseDTO {
     public readonly createdAt: Date;
     public readonly updatedAt: Date;
     public readonly author?: { name: string; username: string };
+    public readonly categories?: { id: string; name: string }[];
 
-    constructor(story: StoryWithAuthor) {
+    constructor(story: StoryWithRelations) {
         this.id = story.storyId;
         this.userId = story.userId;
         this.title = story.title;
@@ -30,6 +32,12 @@ export class StoryResponseDTO {
                 name: story.user.name,
                 username: story.user.username,
             };
+        }
+        if (story.categories) {
+            this.categories = story.categories.map((sc) => ({
+                id: sc.category.id,
+                name: sc.category.name,
+            }));
         }
     }
 }

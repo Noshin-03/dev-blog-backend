@@ -1,9 +1,13 @@
 import { Prisma, PrismaClient, Story } from '@prisma/client';
-import { CreateStoryDTO, UpdateStoryDTO } from '../dtos/storyDTO';
+import {
+    CreateStoryDTO,
+    StoryResponseDTO,
+    UpdateStoryDTO,
+} from '../dtos/storyDTO';
 import { StoryQueryParams } from '../schemas/querySchema';
 
 const getStoryWhere = (params: StoryQueryParams): Prisma.StoryWhereInput => {
-    const { title, author, createdAt } = params;
+    const { title, author, createdAt, category } = params;
     return {
         ...(title && {
             title: { contains: title, mode: 'insensitive' },
@@ -14,6 +18,15 @@ const getStoryWhere = (params: StoryQueryParams): Prisma.StoryWhereInput => {
         ...(createdAt && {
             createdAt: { gte: new Date(createdAt) },
         }),
+        ...(category && {
+            categories: {
+                some: {
+                    category: {
+                        name: { equals: category, mode: 'insensitive' },
+                    },
+                },
+            },
+        }),
     };
 };
 
@@ -21,7 +34,20 @@ export class StoryRepository {
     constructor(private prisma: PrismaClient) {}
 
     async create(data: CreateStoryDTO): Promise<Story> {
-        return this.prisma.story.create({ data });
+        const { categoryIds, ...storyData } = data;
+
+        return this.prisma.story.create({
+            data: {
+                ...storyData,
+                ...(categoryIds && {
+                    categories: {
+                        create: categoryIds.map((categoryId) => ({
+                            categoryId,
+                        })),
+                    },
+                }),
+            },
+        });
     }
 
     async findAll(params: StoryQueryParams): Promise<Story[]> {
@@ -30,7 +56,10 @@ export class StoryRepository {
 
         return this.prisma.story.findMany({
             where,
-            include: { user: { select: { name: true, username: true } } },
+            include: {
+                user: { select: { name: true, username: true } },
+                categories: { include: { category: true } },
+            },
             orderBy: { [orderBy ?? 'createdAt']: 'desc' },
             take: itemsPerPage,
             skip: (page - 1) * itemsPerPage,
@@ -40,6 +69,10 @@ export class StoryRepository {
     async getById(id: string): Promise<Story | null> {
         return this.prisma.story.findUnique({
             where: { storyId: id },
+            include: {
+                user: { select: { name: true, username: true } },
+                categories: { include: { category: true } },
+            },
         });
     }
 
@@ -52,9 +85,21 @@ export class StoryRepository {
     }
 
     async update(id: string, data: UpdateStoryDTO): Promise<Story> {
+        const { categoryIds, ...storyData } = data;
+
         return this.prisma.story.update({
             where: { storyId: id },
-            data,
+            data: {
+                ...storyData,
+                ...(categoryIds && {
+                    categories: {
+                        deleteMany: {},
+                        create: categoryIds.map((categoryId) => ({
+                            categoryId,
+                        })),
+                    },
+                }),
+            },
         });
     }
 
