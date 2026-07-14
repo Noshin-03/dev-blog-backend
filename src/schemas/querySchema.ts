@@ -30,7 +30,8 @@ export const storyQuerySchema = paginationSchema.extend({
         title: z.string().optional(),
         author: z.string().optional(),
         createdAt: z.string().optional(),
-        orderBy: z.enum(['createdAt', 'title']).default('createdAt'),
+        category: z.string().optional(),
+        orderBy: z.enum(['createdAt', 'title']).optional().default('createdAt'),
     }),
 });
 

@@ -27,6 +27,7 @@ export const createStorySchema = z.object({
                 StoryValidation.BODY,
                 `Body must be at least ${StoryValidation.BODY} characters`,
             ),
+        categoryIds: z.array(idSchema).optional(),
     }),
 });
 
