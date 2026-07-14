@@ -18,3 +18,8 @@ export const Pagination = {
     ItemsPerPage: 10,
     MAX: 100,
 };
+
+export const CategoryValidation = {
+    MAX: 50,
+    DESCRIPTION: 200,
+};
