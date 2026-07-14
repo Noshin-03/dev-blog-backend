@@ -17,10 +17,8 @@ export enum Messages {
     EMAIL_VERIFIED = 'Verification complete',
     VERIFICATION_EMAIL_SENT = 'If that email exists, a verification link has been sent',
     EMAIL_ALREADY_VERIFIED = 'Email is already verified',
-    TOO_MANY_REQUESTS = 'Too many request from same address',
+    TOO_MANY_CONFIRMATION_REQUESTS = 'Too many request from same address',
     CATEGORY_NOT_FOUND = 'Category not found',
     CATEGORY_ALREADY_EXISTS = 'Category with this name already exists',
     CATEGORY_DELETED = 'Category deleted successfully',
-    SUMMARY_GENERATION_FAILED = 'Failed to generate story summary',
-    INVALID_SUMMARY = 'AI returned an invalid summary',
 }
