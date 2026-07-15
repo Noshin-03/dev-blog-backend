@@ -27,6 +27,12 @@ export const StoryController = {
         sendResponse(res, httpStatusCodes.OK, story);
     }),
 
+    regenerateSummary: asyncHandler(async (req, res) => {
+        const storyId = req.params.storyId as string;
+        const story = await storyService.regenerateSummary(storyId, req.user!);
+        sendResponse(res, httpStatusCodes.OK, story);
+    }),
+
     updateStory: asyncHandler(async (req, res) => {
         const storyId = req.params.storyId as string;
         const story = await storyService.updateStory(

@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { StoryController } from '../controllers/storyController';
 import { asyncHandler } from '../utils/asyncHandler';
-import { validate } from '../middlewares/validate';
 import {
     createStorySchema,
     updateStorySchema,
@@ -9,7 +8,11 @@ import {
 } from '../schemas/storySchema';
 import { storyQuerySchema } from '../schemas/querySchema';
 import { authenticate } from '../middlewares/authenticate';
-import { requireOwnerOrAdmin } from '../middlewares/authorize';
+import {
+    requireOwnerOrAdmin,
+    summaryRateLimit,
+    validate,
+} from '../middlewares';
 
 const router = Router();
 
@@ -42,6 +45,14 @@ router.delete(
     requireOwnerOrAdmin('userId'),
     validate(storyIdParamSchema),
     asyncHandler(StoryController.deleteStory),
+);
+
+router.post(
+    '/:storyId/regenerate-summary',
+    authenticate,
+    summaryRateLimit,
+    validate(storyIdParamSchema),
+    asyncHandler(StoryController.regenerateSummary),
 );
 
 export default router;

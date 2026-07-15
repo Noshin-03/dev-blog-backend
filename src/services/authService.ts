@@ -171,7 +171,7 @@ export class AuthService {
         }
 
         if (!consumeToken(user.email)) {
-            throw new ValidationError(Messages.TOO_MANY_CONFIRMATION_REQUESTS);
+            throw new ValidationError(Messages.TOO_MANY_REQUESTS);
         }
 
         const emailToken = signEmailToken(user.id);

@@ -46,6 +46,8 @@ model Story {
   userId    String
   title     String
   body      String   
+  summary            String?                     
+  autoSummarize      Boolean   @default(true)  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { UserController } from '../controllers/userController';
 import { asyncHandler } from '../utils/asyncHandler';
-import { validate } from '../middlewares/validate';
 import {
     createUserSchema,
     updateUserSchema,
@@ -9,7 +8,7 @@ import {
 } from '../schemas/userSchema';
 import { userQuerySchema } from '../schemas/querySchema';
 import { authenticate } from '../middlewares/authenticate';
-import { requireOwnerOrAdmin, requireAdmin } from '../middlewares/authorize';
+import { requireOwnerOrAdmin, requireAdmin, validate } from '../middlewares';
 
 const router = Router();
 
