@@ -1,13 +1,12 @@
 import { Router } from 'express';
 import { asyncHandler } from '../utils/asyncHandler';
 import { CategoryController } from '../controllers/categoryController';
-import { requireAdmin, validate } from '../middlewares';
+import { requireAdmin, validate, authenticate } from '../middlewares';
 import {
     categoryIdParamSchema,
     createCategorySchema,
     updateCategorySchema,
 } from '../schemas/categorySchema';
-import { authenticate } from '../middlewares/authenticate';
 
 const router = Router();
 
