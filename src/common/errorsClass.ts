@@ -95,3 +95,18 @@ export class ValidationError extends AppError {
         Object.setPrototypeOf(this, ValidationError.prototype);
     }
 }
+
+export class AiError extends AppError {
+    readonly statusCode = httpStatusCodes.INTERNAL_SERVER_ERROR;
+    readonly logging = false;
+    readonly errors: CustomErrorContent[];
+
+    constructor(
+        message = 'An AI error occurred',
+        errors?: CustomErrorContent[],
+    ) {
+        super(message, false);
+        this.errors = errors ?? [{ message }];
+        Object.setPrototypeOf(this, AiError.prototype);
+    }
+}

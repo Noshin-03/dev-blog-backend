@@ -5,29 +5,31 @@ type Bucket = {
 
 const buckets = new Map<string, Bucket>();
 
-const MAX_TOKENS = 3;
-const REFILL_INTERVAL = 10 * 60 * 1000;
+const DEFAULT_MAX_TOKENS = 3;
+const DEFAULT_REFILL_INTERVAL = 10 * 60 * 1000;
 
-export function consumeToken(key: string): boolean {
+export function consumeToken(
+    key: string,
+    maxTokens: number = DEFAULT_MAX_TOKENS,
+    refillIntervalMs: number = DEFAULT_REFILL_INTERVAL,
+): boolean {
     const now = Date.now();
 
     let bucket = buckets.get(key);
 
     if (!bucket) {
         bucket = {
-            tokens: MAX_TOKENS,
+            tokens: maxTokens,
             lastRefill: now,
         };
     }
 
     const elapsed = now - bucket.lastRefill;
-
-    const refill = Math.floor(elapsed / REFILL_INTERVAL);
+    const refill = Math.floor(elapsed / refillIntervalMs);
 
     if (refill > 0) {
-        bucket.tokens = Math.min(MAX_TOKENS, bucket.tokens + refill);
-
-        bucket.lastRefill = now;
+        bucket.tokens = Math.min(maxTokens, bucket.tokens + refill);
+        bucket.lastRefill += refill * refillIntervalMs;
     }
 
     if (bucket.tokens <= 0) {
@@ -36,8 +38,6 @@ export function consumeToken(key: string): boolean {
     }
 
     bucket.tokens--;
-
     buckets.set(key, bucket);
-
     return true;
 }

@@ -17,6 +17,7 @@ export class StoryResponseDTO {
     public readonly body: string;
     public readonly createdAt: Date;
     public readonly updatedAt: Date;
+    public readonly summary: string | null;
     public readonly author?: { name: string; username: string };
     public readonly categories?: { id: string; name: string }[];
 
@@ -27,6 +28,7 @@ export class StoryResponseDTO {
         this.body = story.body;
         this.createdAt = story.createdAt;
         this.updatedAt = story.updatedAt;
+        this.summary = story.summary;
         if (story.user) {
             this.author = {
                 name: story.user.name,
