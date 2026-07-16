@@ -7,7 +7,10 @@ import {
     loginSchema,
     confirmEmailSchema,
     resendVerificationSchema,
+    changePasswordSchema,
+    confirmPasswordChangeSchema,
 } from '../schemas/authSchema';
+import { authenticate } from '../middlewares';
 
 const router = Router();
 
@@ -31,6 +34,20 @@ router.post(
     '/resend-verification',
     validate(resendVerificationSchema),
     asyncHandler(AuthController.resendVerification),
+);
+
+router.post(
+    '/change-password',
+    authenticate,
+    validate(changePasswordSchema),
+    asyncHandler(AuthController.changePassword),
+);
+
+router.post(
+    '/confirm-password-change',
+    authenticate,
+    validate(confirmPasswordChangeSchema),
+    asyncHandler(AuthController.confirmPasswordChange),
 );
 
 export default router;

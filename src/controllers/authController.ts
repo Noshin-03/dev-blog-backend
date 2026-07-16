@@ -7,6 +7,8 @@ import {
     LoginDto,
     ResendVerificationDTO,
     ConfirmEmailDTO,
+    ChangepasswordDTO,
+    ConfirmPasswordChangeDTO,
 } from '../dtos/authDTO';
 import { getBody, getParams } from '../utils/request';
 
@@ -24,14 +26,29 @@ export const AuthController = {
         const result = await authService.login(body);
         sendResponse(res, httpStatusCodes.OK, result);
     }),
+
     confirmEmail: asyncHandler(async (req, res) => {
         const { token } = getParams<ConfirmEmailDTO>(req);
         const result = await authService.confirmEmail(token);
         sendResponse(res, httpStatusCodes.OK, result);
     }),
+
     resendVerification: asyncHandler(async (req, res) => {
         const body = getBody<ResendVerificationDTO>(req);
         await authService.resendVerification(body.email);
         sendResponse(res, httpStatusCodes.OK);
+    }),
+
+    changePassword: asyncHandler(async (req, res) => {
+        const body = getBody<ChangepasswordDTO>(req);
+        const userId = req.user!.userId;
+        const result = await authService.changePassword(userId, body);
+        sendResponse(res, httpStatusCodes.OK, result);
+    }),
+
+    confirmPasswordChange: asyncHandler(async (req, res) => {
+        const body = getBody<ConfirmPasswordChangeDTO>(req);
+        const result = await authService.confirmPasswordChange(body);
+        sendResponse(res, httpStatusCodes.OK, result);
     }),
 };

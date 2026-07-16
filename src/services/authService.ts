@@ -1,8 +1,19 @@
 import bcrypt from 'bcrypt';
 import prisma from '../config/prisma';
 import { AuthRepository } from '../repositories/authRepository';
-import { RegisterDTO, LoginDto, ChangepasswordDTO } from '../dtos/authDTO';
-import { signToken } from '../utils/jwt';
+import {
+    RegisterDTO,
+    LoginDto,
+    ChangepasswordDTO,
+    ConfirmPasswordChangeDTO,
+} from '../dtos/authDTO';
+import {
+    signPasswordChangeToken,
+    verifyPasswordChangeToken,
+    signToken,
+    signEmailToken,
+    verifyEmailToken,
+} from '../utils/jwt';
 import {
     ConflictError,
     UnauthorizedError,
@@ -10,8 +21,11 @@ import {
 } from '../common/errorsClass';
 import { Messages } from '../constants/messages';
 import { UserService } from './userService';
-import { signEmailToken, verifyEmailToken } from '../utils/jwt';
-import { sendVerificationEmail } from '../utils/mailer';
+import {
+    sendVerificationEmail,
+    sendPasswordChangeEmail,
+    sendPasswordChangedNotification,
+} from '../utils/mailer';
 import { consumeToken } from '../utils/rateLimiter';
 import { AccountRepository } from '../repositories/accountRepository';
 
@@ -121,8 +135,56 @@ export class AuthService {
             throw new UnauthorizedError(Messages.INVALID_CREDENTIALS);
         }
 
-        const passwordHash = await bcrypt.hash(data.newPassword, SALT_ROUNDS);
-        await authRepository.changePassword(userId, passwordHash);
+        await authRepository.deleteActiveToken(userId);
+
+        const token = signPasswordChangeToken(userId);
+
+        await authRepository.savePasswordChangeToken(userId, token);
+
+        await sendPasswordChangeEmail(auth.user.email, token);
+
+        return Messages.PASSWORD_CHANGE_EMAIL_SENT;
+    }
+
+    async confirmPasswordChange(data: ConfirmPasswordChangeDTO) {
+        const passwordChange = await authRepository.checkByToken(data.token);
+
+        if (!passwordChange) {
+            throw new UnauthorizedError(Messages.INVALID_TOKEN);
+        }
+
+        if (!passwordChange.isValid) {
+            throw new UnauthorizedError(Messages.INVALID_TOKEN);
+        }
+
+        const payload = verifyPasswordChangeToken(data.token);
+
+        if (payload.purpose !== 'password-change') {
+            throw new ValidationError(Messages.INVALID_TOKEN);
+        }
+
+        const auth = await authRepository.checkAuthByUserId(payload.userId);
+
+        if (!auth) {
+            throw new UnauthorizedError(Messages.INVALID_CREDENTIALS);
+        }
+
+        const isSamePassword = await bcrypt.compare(
+            data.newPassword,
+            auth.password,
+        );
+
+        if (isSamePassword) {
+            throw new ValidationError(Messages.PASSWORD_INVALID);
+        }
+
+        const hashedPassword = await bcrypt.hash(data.newPassword, SALT_ROUNDS);
+
+        await authRepository.changePassword(payload.userId, hashedPassword);
+
+        await authRepository.invalidatePasswordChangeToken(payload.userId);
+
+        await sendPasswordChangedNotification(auth.user.email);
 
         return Messages.CHANGED;
     }

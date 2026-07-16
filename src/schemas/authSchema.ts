@@ -29,14 +29,21 @@ export const loginSchema = z.object({
 });
 
 export const changePasswordSchema = z.object({
+    body: z.object({
+        oldPassword: z.string().min(1, 'Old password is required'),
+    }),
+});
+
+export const confirmPasswordChangeSchema = z.object({
     body: z
         .object({
-            oldPassword: z.string().min(1, 'Old password is required'),
+            token: z.string().min(1, 'Token is required'),
             newPassword: passwordSchema,
+            confirmPassword: z.string(),
         })
-        .refine((data) => data.oldPassword !== data.newPassword, {
-            message: 'New password must be different from the old password',
-            path: ['newPassword'],
+        .refine((data) => data.newPassword === data.confirmPassword, {
+            message: 'Passwords do not match',
+            path: ['confirmPassword'],
         }),
 });
 
