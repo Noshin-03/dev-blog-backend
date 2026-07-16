@@ -3,9 +3,8 @@ import { UserService } from '../services/userService';
 import { asyncHandler } from '../utils/asyncHandler';
 import { httpStatusCodes } from '../constants/statusCode';
 import { sendResponse } from '../utils/response';
-import { CreateUserDTO, UpdateUserDTO } from '../dtos/userDTO';
 import { UserQueryParams } from '../schemas/querySchema';
-import { getBody, getParams, getQuery } from '../utils/request';
+import { getQuery } from '../utils/request';
 
 const userService = new UserService();
 
