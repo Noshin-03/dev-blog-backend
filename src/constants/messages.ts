@@ -23,4 +23,7 @@ export enum Messages {
     CATEGORY_DELETED = 'Category deleted successfully',
     SUMMARY_GENERATION_FAILED = 'Failed to generate story summary',
     INVALID_SUMMARY = 'AI returned an invalid summary',
+    INVALID_TOKEN = 'Token is invalid',
+    PASSWORD_INVALID = 'New password must be different from the current password',
+    PASSWORD_CHANGE_EMAIL_SENT = 'Mail is sent with change password link',
 }

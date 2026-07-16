@@ -35,6 +35,8 @@ model Auth {
   userId                       String   @id
   password                     String
   passwordLastModificationTime DateTime @default(now())
+  changePasswordToken          String?
+  isValid                      Boolean  @default(false)
 
   user User @relation(fields: [userId], references: [id])
 
