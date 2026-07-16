@@ -2,53 +2,39 @@ import { AuthService } from '../services/authService';
 import { asyncHandler } from '../utils/asyncHandler';
 import { httpStatusCodes } from '../constants/statusCode';
 import { sendResponse } from '../utils/response';
-import {
-    RegisterDTO,
-    LoginDto,
-    ResendVerificationDTO,
-    ConfirmEmailDTO,
-    ChangepasswordDTO,
-    ConfirmPasswordChangeDTO,
-} from '../dtos/authDTO';
-import { getBody, getParams } from '../utils/request';
 
 const authService = new AuthService();
 
 export const AuthController = {
     signup: asyncHandler(async (req, res) => {
-        const body = getBody<RegisterDTO>(req);
-        const result = await authService.signup(body);
+        const result = await authService.signup(req.body);
         sendResponse(res, httpStatusCodes.CREATED, result);
     }),
 
     login: asyncHandler(async (req, res) => {
-        const body = getBody<LoginDto>(req);
-        const result = await authService.login(body);
+        const result = await authService.login(req.body);
         sendResponse(res, httpStatusCodes.OK, result);
     }),
 
     confirmEmail: asyncHandler(async (req, res) => {
-        const { token } = getParams<ConfirmEmailDTO>(req);
+        const token = req.params.token as string;
         const result = await authService.confirmEmail(token);
         sendResponse(res, httpStatusCodes.OK, result);
     }),
 
     resendVerification: asyncHandler(async (req, res) => {
-        const body = getBody<ResendVerificationDTO>(req);
-        await authService.resendVerification(body.email);
+        await authService.resendVerification(req.body.email);
         sendResponse(res, httpStatusCodes.OK);
     }),
 
     changePassword: asyncHandler(async (req, res) => {
-        const body = getBody<ChangepasswordDTO>(req);
         const userId = req.user!.userId;
-        const result = await authService.changePassword(userId, body);
+        const result = await authService.changePassword(userId, req.body);
         sendResponse(res, httpStatusCodes.OK, result);
     }),
 
     confirmPasswordChange: asyncHandler(async (req, res) => {
-        const body = getBody<ConfirmPasswordChangeDTO>(req);
-        const result = await authService.confirmPasswordChange(body);
+        const result = await authService.confirmPasswordChange(req.body);
         sendResponse(res, httpStatusCodes.OK, result);
     }),
 };

@@ -87,7 +87,7 @@ export class StoryRepository {
         return story !== null;
     }
 
-    async updateSummary(id: string, summary: string): Promise<Story> {
+    async storeSummary(id: string, summary: string): Promise<Story> {
         return this.prisma.story.update({
             where: { storyId: id },
             data: {

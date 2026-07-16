@@ -21,6 +21,18 @@ export const UserController = {
         sendResponse(res, httpStatusCodes.OK, user);
     }),
 
+    getProfile: asyncHandler(async (req, res) => {
+        const userId = req.user!.userId;
+        const profile = await userService.getProfile(userId);
+        sendResponse(res, httpStatusCodes.OK, profile);
+    }),
+
+    updateProfile: asyncHandler(async (req, res) => {
+        const userId = req.user!.userId;
+        const profile = await userService.updateProfile(userId, req.body);
+        sendResponse(res, httpStatusCodes.OK, profile);
+    }),
+
     updateUser: asyncHandler(async (req, res: Response) => {
         const userId = req.params.userId as string;
         const user = await userService.updateUser(userId, req.body);

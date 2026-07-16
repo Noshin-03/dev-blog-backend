@@ -29,7 +29,7 @@ export class StoryService {
                     story.body,
                 );
 
-                await storyRepository.updateSummary(story.storyId, summary);
+                await storyRepository.storeSummary(story.storyId, summary);
 
                 story.summary = summary;
             } catch (error) {
@@ -74,7 +74,7 @@ export class StoryService {
 
         const summary = await generateStorySummary(story.title, story.body);
 
-        const updated = await storyRepository.updateSummary(id, summary);
+        const updated = await storyRepository.storeSummary(id, summary);
 
         return new StoryResponseDTO(updated);
     }
@@ -112,7 +112,7 @@ export class StoryService {
                     updated.body,
                 );
 
-                await storyRepository.updateSummary(updated.storyId, summary);
+                await storyRepository.storeSummary(updated.storyId, summary);
 
                 updated.summary = summary;
             } catch (error) {

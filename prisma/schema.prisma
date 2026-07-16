@@ -20,6 +20,7 @@ model User {
   username  String   @unique
   name      String
   email     String   @unique
+  avatarUrl String?
   joinDate  DateTime @default(now())
   role      Role     @default(USER)
   isDeleted Boolean  @default(false)
