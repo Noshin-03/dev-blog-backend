@@ -4,24 +4,12 @@ import { CreateUserDTO, UpdateUserDTO, UserResponseDTO } from '../dtos/userDTO';
 import { NotFoundError, ConflictError } from '../common/errorsClass';
 import { Messages } from '../constants/messages';
 import { UserQueryParams } from '../schemas/querySchema';
+import { AccountRepository } from '../repositories/accountRepository';
 
 const userRepository = new UserRepository(prisma);
+const accountRepository = new AccountRepository(prisma);
 
 export class UserService {
-    async createUser(data: CreateUserDTO): Promise<UserResponseDTO> {
-        if (await userRepository.checkByEmail(data.email)) {
-            throw new ConflictError(Messages.EMAIL_ALREADY_IN_USE);
-        }
-
-        if (await userRepository.checkByUsername(data.username)) {
-            throw new ConflictError(Messages.USERNAME_ALREADY_IN_USE);
-        }
-
-        const user = await userRepository.create(data);
-
-        return new UserResponseDTO(user);
-    }
-
     async getAllUsers(params: UserQueryParams): Promise<UserResponseDTO[]> {
         const users = await userRepository.getAllUser(params);
 
@@ -60,7 +48,7 @@ export class UserService {
             throw new NotFoundError(Messages.USER_NOT_FOUND);
         }
 
-        const deleted = await userRepository.softDelete(id);
+        const deleted = await accountRepository.softDeleteUserWithAuth(id);
 
         return new UserResponseDTO(deleted);
     }
