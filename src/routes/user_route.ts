@@ -13,11 +13,6 @@ import { requireOwnerOrAdmin, requireAdmin } from '../middlewares/authorize';
 
 const router = Router();
 
-router.post(
-    '/',
-    validate(createUserSchema),
-    asyncHandler(UserController.createUser),
-);
 router.get(
     '/',
     authenticate,
