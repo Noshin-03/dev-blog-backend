@@ -6,9 +6,11 @@ import { signToken } from '../utils/jwt';
 import { ConflictError, UnauthorizedError } from '../common/errorsClass';
 import { Messages } from '../constants/messages';
 import { UserService } from './userService';
+import { AccountRepository } from '../repositories/accountRepository';
 
 const SALT_ROUNDS = 10;
 
+const accountRepository = new AccountRepository(prisma);
 const authRepository = new AuthRepository(prisma);
 const userService = new UserService();
 
@@ -28,7 +30,7 @@ export class AuthService {
 
         const passwordHash = await bcrypt.hash(data.password, SALT_ROUNDS);
 
-        const user = await authRepository.createUserWithAuth({
+        const user = await accountRepository.createUserWithAuth({
             username: data.username,
             name: data.name,
             email: data.email,

@@ -9,11 +9,6 @@ import { getQuery } from '../utils/request';
 const userService = new UserService();
 
 export const UserController = {
-    createUser: asyncHandler(async (req, res: Response) => {
-        const user = await userService.createUser(req.body);
-        sendResponse(res, httpStatusCodes.CREATED, user);
-    }),
-
     getAllUsers: asyncHandler(async (req, res) => {
         const query = getQuery<UserQueryParams>(req);
         const users = await userService.getAllUsers(query);
