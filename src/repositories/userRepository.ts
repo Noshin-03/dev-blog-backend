@@ -39,6 +39,18 @@ export class UserRepository {
         });
     }
 
+    async getUserByEmail(email: string): Promise<User | null> {
+        return this.prisma.user.findFirst({
+            where: { email, isDeleted: false },
+        });
+    }
+
+    async getUserByUsername(username: string): Promise<User | null> {
+        return this.prisma.user.findFirst({
+            where: { username, isDeleted: false },
+        });
+    }
+
     async checkByUsername(username: string): Promise<boolean> {
         const user = await this.prisma.user.findUnique({
             where: { username },
