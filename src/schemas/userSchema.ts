@@ -39,3 +39,18 @@ export const updateUserSchema = z.object({
             message: 'At least one field must be provided to update',
         }),
 });
+
+const updateUserBodySchema = createUserSchema.shape.body.partial();
+
+export const updateProfileSchema = z.object({
+    body: updateUserBodySchema
+        .omit({
+            role: true,
+        })
+        .extend({
+            avatarUrl: z.url().optional(),
+        })
+        .refine((data) => Object.keys(data).length > 0, {
+            message: 'At least one field must be provided to update',
+        }),
+});
