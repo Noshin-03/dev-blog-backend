@@ -64,4 +64,32 @@ export class UserService {
 
         return new UserResponseDTO(deleted);
     }
+
+    async checkByEmail(email: string): Promise<boolean> {
+        return await userRepository.checkByEmail(email);
+    }
+
+    async checkByUsername(username: string): Promise<boolean> {
+        return await userRepository.checkByUsername(username);
+    }
+
+    async getUserByEmail(email: string): Promise<UserResponseDTO> {
+        const user = await userRepository.getUserByEmail(email);
+
+        if (!user) {
+            throw new NotFoundError(Messages.USER_NOT_FOUND);
+        }
+
+        return new UserResponseDTO(user);
+    }
+
+    async getUserByUsername(username: string): Promise<UserResponseDTO> {
+        const user = await userRepository.getUserByUsername(username);
+
+        if (!user) {
+            throw new NotFoundError(Messages.USER_NOT_FOUND);
+        }
+
+        return new UserResponseDTO(user);
+    }
 }
