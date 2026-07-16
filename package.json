@@ -54,6 +54,9 @@
 =======
 >>>>>>> 8655cae (refactor: store validated request data in middleware)
     },
+    "prisma": {
+        "seed": "tsx prisma/seed.ts"
+    },
     "lint-staged": {
         "*.ts": [
             "eslint --fix",
