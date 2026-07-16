@@ -1,9 +1,10 @@
 import { z } from 'zod';
 import { UserValidation } from '../constants/schemaConstants';
+import { idSchema } from './idSchema';
 
-export const idParamSchema = z.object({
+export const userIdParamSchema = z.object({
     params: z.object({
-        userId: z.uuid('Invalid id format'),
+        userId: idSchema,
     }),
 });
 
@@ -31,7 +32,7 @@ export const createUserSchema = z.object({
 });
 
 export const updateUserSchema = z.object({
-    params: idParamSchema.shape.params,
+    params: userIdParamSchema.shape.params,
     body: createUserSchema.shape.body
         .partial()
         .refine((data) => Object.keys(data).length > 0, {

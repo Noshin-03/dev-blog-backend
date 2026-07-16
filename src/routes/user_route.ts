@@ -2,8 +2,11 @@ import { Router } from 'express';
 import { UserController } from '../controllers/userController';
 import { asyncHandler } from '../utils/asyncHandler';
 import { validate } from '../middlewares/validate';
-import { createUserSchema, updateUserSchema } from '../schemas/userSchema';
-import { idParamSchema } from '../schemas/userSchema';
+import {
+    createUserSchema,
+    updateUserSchema,
+    userIdParamSchema,
+} from '../schemas/userSchema';
 
 const router = Router();
 
@@ -15,7 +18,7 @@ router.post(
 router.get('/', asyncHandler(UserController.getAllUsers));
 router.get(
     '/:userId',
-    validate(idParamSchema),
+    validate(userIdParamSchema),
     asyncHandler(UserController.getUserById),
 );
 router.patch(
@@ -25,7 +28,7 @@ router.patch(
 );
 router.delete(
     '/:userId',
-    validate(idParamSchema),
+    validate(userIdParamSchema),
     asyncHandler(UserController.deleteUser),
 );
 
