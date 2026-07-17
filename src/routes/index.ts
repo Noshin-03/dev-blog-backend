@@ -10,6 +10,6 @@ routes.use('/health', healthRoute);
 routes.use('/users', userRoutes);
 routes.use('/stories', storyRoutes);
 routes.use('/auth', authRoutes);
-routes.use('/categories', categoryRoutes);
+routes.use('/stories/category', categoryRoutes);
 
 export default routes;

@@ -3,6 +3,7 @@ import { AIError } from '../common/errorsClass';
 import { logger } from '../utils/logger';
 import { env } from '../config/env';
 import { Messages } from '../constants/messages';
+import { buildStorySummaryPrompt } from '../utils/aiPrompts';
 
 const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
 
@@ -20,14 +21,12 @@ export const generateStorySummary = async (
     const input = truncate(`${title}\n\n${body}`, MAX_INPUT_CHARS);
 
     let responseText: string | undefined;
-
     try {
-        //FIXME: move the prompt to another file
         const response = await ai.models.generateContent({
             model: MODEL,
-            contents: `Summarize the following blog post in 2-3 concise sentences. Return only the summary, no preamble.\n\n${input}`,
+            contents: buildStorySummaryPrompt(input),
         });
-
+        
         responseText = response.text;
     } catch (err) {
         logger.error('Gemini API call failed', {

@@ -18,6 +18,7 @@ const router = Router();
 
 router.post(
     '/',
+    authenticate,
     validate(createStorySchema),
     asyncHandler(StoryController.createStory),
 );

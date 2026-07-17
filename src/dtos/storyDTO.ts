@@ -10,6 +10,34 @@ type StoryWithRelations = Story & {
     categories?: (StoryCategory & { category: Category })[];
 };
 
+export class ListStoryDTO {
+    public readonly id: string;
+    public readonly title: string;
+    public readonly createdAt: Date;
+    public readonly summary: string | null;
+    public readonly author?: { name: string; username: string };
+    public readonly categories?: { id: string; name: string }[];
+
+    constructor(story: StoryWithRelations) {
+        this.id = story.storyId;
+        this.title = story.title;
+        this.createdAt = story.createdAt;
+        this.summary = story.summary;
+        if (story.user) {
+            this.author = {
+                name: story.user.name,
+                username: story.user.username,
+            };
+        }
+        if (story.categories) {
+            this.categories = story.categories.map((sc) => ({
+                id: sc.category.id,
+                name: sc.category.name,
+            }));
+        }
+    }
+}
+
 export class StoryResponseDTO {
     public readonly id: string;
     public readonly userId: string;

@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client/extension';
-import { isValid } from 'zod/v3';
+import { PrismaClient } from '@prisma/client';
 
 export class AuthRepository {
     constructor(private prisma: PrismaClient) {}

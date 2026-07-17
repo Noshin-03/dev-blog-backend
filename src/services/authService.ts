@@ -16,6 +16,7 @@ import {
 } from '../utils/jwt';
 import {
     ConflictError,
+    NotFoundError,
     UnauthorizedError,
     ValidationError,
 } from '../common/errorsClass';
@@ -127,16 +128,10 @@ export class AuthService {
             throw new UnauthorizedError(Messages.INVALID_CREDENTIALS);
         }
 
-        const passwordMatch = await bcrypt.compare(
-            data.oldPassword,
-            auth.password,
-        );
-
+        const passwordMatch = await bcrypt.compare(data.oldPassword, auth.password);
         if (!passwordMatch) {
             throw new UnauthorizedError(Messages.INVALID_CREDENTIALS);
         }
-        //FIXME: just overwrite the token
-        await authRepository.deleteActiveToken(userId);
 
         const token = signPasswordChangeToken(userId);
 
@@ -192,7 +187,6 @@ export class AuthService {
 
     async confirmEmail(token: string) {
         let payload;
-        //FIXME: fix error names
         try {
             payload = verifyEmailToken(token);
         } catch (err: any) {
@@ -210,7 +204,7 @@ export class AuthService {
         const auth = await userService.getUserById(payload.userId);
 
         if (!auth) {
-            throw new UnauthorizedError(Messages.USER_NOT_FOUND);
+            throw new NotFoundError(Messages.USER_NOT_FOUND);
         }
 
         if (!auth.isVerified) {

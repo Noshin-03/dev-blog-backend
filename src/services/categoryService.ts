@@ -11,12 +11,27 @@ import { Messages } from '../constants/messages';
 const categoryRepository = new CategoryRepository(prisma);
 
 export class CategoryService {
+    private async ensureCategoryExists(id: string): Promise<void> {
+        const exists = await categoryRepository.checkById(id);
+        if (!exists) {
+            throw new NotFoundError(Messages.CATEGORY_NOT_FOUND);
+        }
+    }
+
+    private async ensureNameIsUnique(
+        name: string,
+        excludeId?: string,
+    ): Promise<void> {
+        const existing = await categoryRepository.findByName(name);
+        if (existing && existing.id !== excludeId) {
+            throw new ConflictError(Messages.CATEGORY_ALREADY_EXISTS);
+        }
+    }
+
     async createCategory(
         data: CreateCategoryDTO,
     ): Promise<CategoryResponseDTO> {
-        if (await categoryRepository.findByName(data.name)) {
-            throw new ConflictError(Messages.CATEGORY_ALREADY_EXISTS);
-        }
+        await this.ensureNameIsUnique(data.name);
 
         const category = await categoryRepository.create(data);
         return new CategoryResponseDTO(category);
@@ -39,17 +54,10 @@ export class CategoryService {
         id: string,
         data: UpdateCategoryDTO,
     ): Promise<CategoryResponseDTO> {
-        const exists = await categoryRepository.checkById(id);
-        if (!exists) {
-            throw new NotFoundError(Messages.CATEGORY_NOT_FOUND);
-        }
+        await this.ensureCategoryExists(id);
 
         if (data.name) {
-            const existing = await categoryRepository.findByName(data.name);
-
-            if (existing && existing.id !== id) {
-                throw new ConflictError(Messages.CATEGORY_ALREADY_EXISTS);
-            }
+            await this.ensureNameIsUnique(data.name, id);
         }
 
         const category = await categoryRepository.update(id, data);
@@ -57,10 +65,7 @@ export class CategoryService {
     }
 
     async deleteCategory(id: string): Promise<void> {
-        const exists = await categoryRepository.checkById(id);
-        if (!exists) {
-            throw new NotFoundError(Messages.CATEGORY_NOT_FOUND);
-        }
+        await this.ensureCategoryExists(id);
         await categoryRepository.delete(id);
     }
 }

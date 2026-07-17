@@ -36,18 +36,17 @@ export const StoryController = {
 
     updateStory: asyncHandler(async (req, res) => {
         const storyId = req.params.storyId as string;
-        const story = await storyService.updateStory(storyId, req.body);
+        const story = await storyService.updateStory(
+            storyId,
+            req.body,
+        );
         sendResponse(res, httpStatusCodes.OK, story);
     }),
 
     deleteStory: asyncHandler(async (req, res: Response) => {
         const storyId = req.params.storyId as string;
         await storyService.deleteStory(storyId);
-        sendResponse(
-            res,
-            httpStatusCodes.OK,
-            undefined,
-            Messages.STORY_DELETED,
-        );
+
+        sendResponse(res, httpStatusCodes.OK, undefined);
     }),
 };

@@ -3,6 +3,7 @@ import { StoryRepository } from '../repositories/storyRepository';
 import {
     CreateStoryDTO,
     UpdateStoryDTO,
+    ListStoryDTO,
     StoryResponseDTO,
 } from '../dtos/storyDTO';
 import { Messages } from '../constants/messages';
@@ -26,34 +27,22 @@ export class StoryService {
         const story = await storyRepository.create(userId, data);
 
         if (data.autoSummarize) {
-            try {
-                const summary = await generateStorySummary(
-                    story.title,
-                    story.body,
-                );
-
-                await storyRepository.storeSummary(story.storyId, summary);
-
-                story.summary = summary;
-            } catch (error) {
-                if (!(error instanceof AIError)) {
-                    throw error;
-                }
-            }
+            const summary = await generateStorySummary(story.title, story.body);
+            await storyRepository.storeSummary(story.storyId, summary);
+            story.summary = summary;
         }
 
         return new StoryResponseDTO(story);
     }
 
-    async getAllStories(params: StoryQueryParams): Promise<StoryResponseDTO[]> {
+    async getAllStories(params: StoryQueryParams): Promise<ListStoryDTO[]> {
         const stories = await storyRepository.findAll(params);
-        //FIXME:
-        return stories.map((story) => new StoryResponseDTO(story));
+        return stories.map((story) => new ListStoryDTO(story));
     }
     //FIXME: change id to storyId
 
-    async getStoryById(id: string): Promise<StoryResponseDTO> {
-        const story = await storyRepository.getById(id);
+    async getStoryById(storyId: string): Promise<StoryResponseDTO> {
+        const story = await storyRepository.getById(storyId);
 
         if (!story) {
             throw new NotFoundError(Messages.STORY_NOT_FOUND);
@@ -64,23 +53,17 @@ export class StoryService {
     //FIXME: repeated check
     //FIXME: change id to storyId
     async regenerateSummary(
-        id: string,
+        storyId: string,
         requestingUser: JwtPayload,
     ): Promise<StoryResponseDTO> {
-        const story = await storyRepository.getById(id);
+        const story = await storyRepository.getById(storyId);
         if (!story) {
             throw new NotFoundError(Messages.STORY_NOT_FOUND);
         }
 
-        const isOwner = story.userId === requestingUser.userId;
-        const isAdmin = requestingUser.role === Role.ADMIN;
-        if (!isOwner && !isAdmin) {
-            throw new UnauthorizedError(Messages.ADMIN_ONLY);
-        }
-
         const summary = await generateStorySummary(story.title, story.body);
 
-        const updated = await storyRepository.storeSummary(id, summary);
+        const updated = await storyRepository.storeSummary(storyId, summary);
 
         return new StoryResponseDTO(updated);
     }
@@ -89,7 +72,6 @@ export class StoryService {
     async updateStory(
         storyId: string,
         data: UpdateStoryDTO,
-        requestingUser: JwtPayload,
     ): Promise<StoryResponseDTO> {
         const story = await storyRepository.getById(storyId);
 
@@ -97,52 +79,26 @@ export class StoryService {
             throw new NotFoundError(Messages.STORY_NOT_FOUND);
         }
 
-        const isOwner = story.userId === requestingUser.userId;
-        const isAdmin = requestingUser.role === Role.ADMIN;
-
-        if (!isOwner && !isAdmin) {
-            throw new UnauthorizedError(Messages.UNAUTHORIZED);
-        }
-
         const updated = await storyRepository.update(storyId, data);
-        //FIXME:
-        const autoSummarize = data.autoSummarize ?? story.autoSummarize;
 
-        const generate = autoSummarize && data.body !== undefined;
+        const hasBodyChanged = data.body !== undefined;
 
-        if (generate) {
-            try {
-                const summary = await generateStorySummary(
-                    updated.title,
-                    updated.body,
-                );
+        if (hasBodyChanged) {
+            const summary = await generateStorySummary(updated.title, updated.body);
+            const withSummary = await storyRepository.storeSummary(updated.storyId, summary);
 
-                await storyRepository.storeSummary(updated.storyId, summary);
-
-                updated.summary = summary;
-            } catch (error) {
-                if (!(error instanceof AIError)) {
-                    throw error;
-                }
-            }
+            updated.summary = withSummary.summary;
         }
+
         return new StoryResponseDTO(updated);
     }
-    //FIXME: repeated check
+
     async deleteStory(
         storyId: string,
-        requestingUser: JwtPayload,
     ): Promise<void> {
         const story = await storyRepository.getById(storyId);
         if (!story) {
             throw new NotFoundError(Messages.STORY_NOT_FOUND);
-        }
-
-        const isOwner = story.userId === requestingUser.userId;
-        const isAdmin = requestingUser.role === Role.ADMIN;
-
-        if (!isOwner && !isAdmin) {
-            throw new UnauthorizedError(Messages.UNAUTHORIZED);
         }
 
         await storyRepository.delete(storyId);
