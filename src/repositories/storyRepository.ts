@@ -32,12 +32,13 @@ const getStoryWhere = (params: StoryQueryParams): Prisma.StoryWhereInput => {
 
 export class StoryRepository {
     constructor(private prisma: PrismaClient) {}
-
-    async create(data: CreateStoryDTO): Promise<Story> {
+    //FIXME:double query, database error
+    async create(userId: string, data: CreateStoryDTO): Promise<Story> {
         const { categoryIds, ...storyData } = data;
         return this.prisma.story.create({
             data: {
                 ...storyData,
+                userId,
                 ...(categoryIds && {
                     categories: {
                         create: categoryIds.map((categoryId) => ({

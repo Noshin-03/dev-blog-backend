@@ -21,6 +21,7 @@ export const env = {
     JWT_EXPIRATION: required('JWT_EXPIRATION') as StringValue,
 
     GMAIL: required('GMAIL'),
+    //FIXME: need to change name
     PASSWORD: required('PASSWORD'),
     CLIENT_URL: required('CLIENT_URL'),
     EMAIL_JWT_SECRET: required('EMAIL_JWT_SECRET'),

@@ -34,7 +34,7 @@ export class UserService {
         }
         return new ProfileResponseDTO(user);
     }
-
+    //FIXME: same as updateUser
     async updateProfile(
         id: string,
         data: UpdateProfileDTO,
@@ -49,7 +49,7 @@ export class UserService {
 
         return new ProfileResponseDTO(updated);
     }
-
+    //FIXME: new email exists kore ki na, email change hoile verify korte hbe
     async updateUser(
         id: string,
         data: UpdateUserDTO,

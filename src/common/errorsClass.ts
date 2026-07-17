@@ -96,7 +96,7 @@ export class ValidationError extends AppError {
     }
 }
 
-export class AiError extends AppError {
+export class AIError extends AppError {
     readonly statusCode = httpStatusCodes.INTERNAL_SERVER_ERROR;
     readonly logging = false;
     readonly errors: CustomErrorContent[];
@@ -107,6 +107,6 @@ export class AiError extends AppError {
     ) {
         super(message, false);
         this.errors = errors ?? [{ message }];
-        Object.setPrototypeOf(this, AiError.prototype);
+        Object.setPrototypeOf(this, AIError.prototype);
     }
 }

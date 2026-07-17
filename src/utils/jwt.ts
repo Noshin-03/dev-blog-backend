@@ -40,7 +40,7 @@ export const signEmailToken = (userId: string): string => {
 export const verifyEmailToken = (token: string): EmailTokenPayload => {
     return jwt.verify(token, env.EMAIL_JWT_SECRET) as EmailTokenPayload;
 };
-
+//FIXME: set the expiration time in .env
 export const signPasswordChangeToken = (userId: string): string => {
     return jwt.sign(
         {

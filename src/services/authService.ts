@@ -37,6 +37,7 @@ const userService = new UserService();
 
 export class AuthService {
     async signup(data: RegisterDTO) {
+        //FIXME: fix error names
         const exitingEmail = await userService.checkByEmail(data.email);
         if (exitingEmail) {
             throw new ConflictError(Messages.EMAIL_ALREADY_IN_USE);
@@ -134,7 +135,7 @@ export class AuthService {
         if (!passwordMatch) {
             throw new UnauthorizedError(Messages.INVALID_CREDENTIALS);
         }
-
+        //FIXME: just overwrite the token
         await authRepository.deleteActiveToken(userId);
 
         const token = signPasswordChangeToken(userId);
@@ -191,7 +192,7 @@ export class AuthService {
 
     async confirmEmail(token: string) {
         let payload;
-
+        //FIXME: fix error names
         try {
             payload = verifyEmailToken(token);
         } catch (err: any) {

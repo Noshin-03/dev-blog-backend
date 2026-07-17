@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
-import { AiError } from '../common/errorsClass';
+import { AIError } from '../common/errorsClass';
 import { logger } from '../utils/logger';
 import { env } from '../config/env';
 import { Messages } from '../constants/messages';
@@ -22,6 +22,7 @@ export const generateStorySummary = async (
     let responseText: string | undefined;
 
     try {
+        //FIXME: move the prompt to another file
         const response = await ai.models.generateContent({
             model: MODEL,
             contents: `Summarize the following blog post in 2-3 concise sentences. Return only the summary, no preamble.\n\n${input}`,
@@ -33,13 +34,13 @@ export const generateStorySummary = async (
             model: MODEL,
             error: err instanceof Error ? err.message : String(err),
         });
-        throw new AiError(Messages.SUMMARY_GENERATION_FAILED);
+        throw new AIError(Messages.SUMMARY_GENERATION_FAILED);
     }
 
     const summary = responseText?.trim();
 
     if (!summary || summary.length < MIN_VALID_SUMMARY_LENGTH) {
-        throw new AiError(Messages.INVALID_SUMMARY);
+        throw new AIError(Messages.INVALID_SUMMARY);
     }
 
     return summary;

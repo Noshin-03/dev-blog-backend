@@ -11,8 +11,8 @@ const storyService = new StoryService();
 
 export const StoryController = {
     createStory: asyncHandler(async (req, res: Response) => {
-        const { body } = req.body;
-        const story = await storyService.createStory(body);
+        const userId = req.user?.userId;
+        const story = await storyService.createStory(userId, req.body);
         sendResponse(res, httpStatusCodes.CREATED, story);
     }),
 

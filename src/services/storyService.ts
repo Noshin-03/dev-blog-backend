@@ -7,7 +7,7 @@ import {
 } from '../dtos/storyDTO';
 import { Messages } from '../constants/messages';
 import {
-    AiError,
+    AIError,
     NotFoundError,
     UnauthorizedError,
 } from '../common/errorsClass';
@@ -19,8 +19,11 @@ import { generateStorySummary } from '../services/aiService';
 const storyRepository = new StoryRepository(prisma);
 
 export class StoryService {
-    async createStory(data: CreateStoryDTO): Promise<StoryResponseDTO> {
-        const story = await storyRepository.create(data);
+    async createStory(
+        userId: string,
+        data: CreateStoryDTO,
+    ): Promise<StoryResponseDTO> {
+        const story = await storyRepository.create(userId, data);
 
         if (data.autoSummarize) {
             try {
@@ -33,7 +36,7 @@ export class StoryService {
 
                 story.summary = summary;
             } catch (error) {
-                if (!(error instanceof AiError)) {
+                if (!(error instanceof AIError)) {
                     throw error;
                 }
             }
@@ -44,8 +47,10 @@ export class StoryService {
 
     async getAllStories(params: StoryQueryParams): Promise<StoryResponseDTO[]> {
         const stories = await storyRepository.findAll(params);
+        //FIXME:
         return stories.map((story) => new StoryResponseDTO(story));
     }
+    //FIXME: change id to storyId
 
     async getStoryById(id: string): Promise<StoryResponseDTO> {
         const story = await storyRepository.getById(id);
@@ -56,7 +61,8 @@ export class StoryService {
 
         return new StoryResponseDTO(story);
     }
-
+    //FIXME: repeated check
+    //FIXME: change id to storyId
     async regenerateSummary(
         id: string,
         requestingUser: JwtPayload,
@@ -78,13 +84,14 @@ export class StoryService {
 
         return new StoryResponseDTO(updated);
     }
-
+    //FIXME: repeated check
+    //FIXME: change id to storyId
     async updateStory(
-        id: string,
+        storyId: string,
         data: UpdateStoryDTO,
         requestingUser: JwtPayload,
     ): Promise<StoryResponseDTO> {
-        const story = await storyRepository.getById(id);
+        const story = await storyRepository.getById(storyId);
 
         if (!story) {
             throw new NotFoundError(Messages.STORY_NOT_FOUND);
@@ -97,15 +104,13 @@ export class StoryService {
             throw new UnauthorizedError(Messages.UNAUTHORIZED);
         }
 
-        const updated = await storyRepository.update(id, data);
-
+        const updated = await storyRepository.update(storyId, data);
+        //FIXME:
         const autoSummarize = data.autoSummarize ?? story.autoSummarize;
 
-        const shouldGenerateSummary =
-            autoSummarize &&
-            (data.title !== undefined || data.body !== undefined);
+        const generate = autoSummarize && data.body !== undefined;
 
-        if (shouldGenerateSummary) {
+        if (generate) {
             try {
                 const summary = await generateStorySummary(
                     updated.title,
@@ -116,16 +121,19 @@ export class StoryService {
 
                 updated.summary = summary;
             } catch (error) {
-                if (!(error instanceof AiError)) {
+                if (!(error instanceof AIError)) {
                     throw error;
                 }
             }
         }
         return new StoryResponseDTO(updated);
     }
-
-    async deleteStory(id: string, requestingUser: JwtPayload): Promise<void> {
-        const story = await storyRepository.getById(id);
+    //FIXME: repeated check
+    async deleteStory(
+        storyId: string,
+        requestingUser: JwtPayload,
+    ): Promise<void> {
+        const story = await storyRepository.getById(storyId);
         if (!story) {
             throw new NotFoundError(Messages.STORY_NOT_FOUND);
         }
@@ -137,6 +145,6 @@ export class StoryService {
             throw new UnauthorizedError(Messages.UNAUTHORIZED);
         }
 
-        await storyRepository.delete(id);
+        await storyRepository.delete(storyId);
     }
 }

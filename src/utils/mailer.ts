@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
         pass: env.PASSWORD,
     },
 });
-
+//FIXME: template banate hbe
 export const sendVerificationEmail = async (
     to: string,
     token: string,
