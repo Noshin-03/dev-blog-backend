@@ -16,4 +16,11 @@ export class AuthRepository {
     async checkAuthByUserId(userId: string) {
         return this.prisma.auth.findUnique({ where: { userId } });
     }
+
+    async markEmailVerified(userId: string) {
+        return this.prisma.user.update({
+            where: { id: userId },
+            data: { isVerified: true },
+        });
+    }
 }

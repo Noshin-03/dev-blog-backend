@@ -3,9 +3,16 @@ import prisma from '../config/prisma';
 import { AuthRepository } from '../repositories/authRepository';
 import { RegisterDTO, LoginDto, ChangepasswordDTO } from '../dtos/authDTO';
 import { signToken } from '../utils/jwt';
-import { ConflictError, UnauthorizedError } from '../common/errorsClass';
+import {
+    ConflictError,
+    UnauthorizedError,
+    ValidationError,
+} from '../common/errorsClass';
 import { Messages } from '../constants/messages';
 import { UserService } from './userService';
+import { signEmailToken, verifyEmailToken } from '../utils/jwt';
+import { sendVerificationEmail } from '../utils/mailer';
+import { consumeToken } from '../utils/rateLimiter';
 import { AccountRepository } from '../repositories/accountRepository';
 
 const SALT_ROUNDS = 10;
@@ -36,6 +43,9 @@ export class AuthService {
             email: data.email,
             passwordHash,
         });
+
+        const emailToken = signEmailToken(user.id);
+        await sendVerificationEmail(user.email, emailToken);
 
         const token = signToken({
             userId: user.id,
@@ -70,6 +80,12 @@ export class AuthService {
 
         if (!passwordMatch) {
             throw new UnauthorizedError(Messages.INVALID_CREDENTIALS);
+        }
+
+        if (!user.isVerified) {
+            const emailToken = signEmailToken(user.id);
+            await sendVerificationEmail(user.email, emailToken);
+            throw new UnauthorizedError(Messages.EMAIL_NOT_VERIFIED);
         }
 
         const token = signToken({
@@ -109,5 +125,61 @@ export class AuthService {
         await authRepository.changePassword(userId, passwordHash);
 
         return Messages.CHANGED;
+    }
+
+    async confirmEmail(token: string) {
+        let payload;
+
+        try {
+            payload = verifyEmailToken(token);
+        } catch (err: any) {
+            if (err.name === 'TokenExpiredError') {
+                throw new ValidationError(Messages.VERIFICATION_LINK_EXPIRED);
+            }
+
+            throw new ValidationError(Messages.INVALID_VERIFICATION_LINK);
+        }
+
+        if (payload.purpose !== 'email-verification') {
+            throw new ValidationError(Messages.INVALID_VERIFICATION_LINK);
+        }
+
+        const auth = await userService.getUserById(payload.userId);
+
+        if (!auth) {
+            throw new UnauthorizedError(Messages.USER_NOT_FOUND);
+        }
+
+        if (!auth.isVerified) {
+            await authRepository.markEmailVerified(payload.userId);
+        }
+
+        return {
+            message: Messages.EMAIL_VERIFIED,
+        };
+    }
+
+    async resendVerification(email: string) {
+        const user = await userService.getUserByEmail(email);
+
+        if (!user) {
+            throw new UnauthorizedError(Messages.USER_NOT_FOUND);
+        }
+
+        if (user.isVerified) {
+            throw new ValidationError(Messages.EMAIL_ALREADY_VERIFIED);
+        }
+
+        if (!consumeToken(user.email)) {
+            throw new ValidationError(Messages.TOO_MANY_CONFIRMATION_REQUESTS);
+        }
+
+        const emailToken = signEmailToken(user.id);
+
+        await sendVerificationEmail(user.email, emailToken);
+
+        return {
+            message: Messages.VERIFICATION_EMAIL_SENT,
+        };
     }
 }

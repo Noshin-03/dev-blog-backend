@@ -28,20 +28,20 @@ export const StoryController = {
         sendResponse(res, httpStatusCodes.OK, story);
     }),
 
-    updateStory: asyncHandler(async (req, res: Response) => {
+    updateStory: asyncHandler(async (req, res) => {
         const storyId = req.params.storyId as string;
-        const story = await storyService.updateStory(storyId, req.body);
+        const story = await storyService.updateStory(
+            storyId,
+            req.body,
+            req.user,
+        );
         sendResponse(res, httpStatusCodes.OK, story);
     }),
 
-    deleteStory: asyncHandler(async (req, res: Response) => {
+    deleteStory: asyncHandler(async (req, res) => {
         const storyId = req.params.storyId as string;
-        await storyService.deleteStory(storyId);
-        sendResponse(
-            res,
-            httpStatusCodes.OK,
-            undefined,
-            Messages.STORY_DELETED,
-        );
+        await storyService.deleteStory(storyId, req.user);
+
+        sendResponse(res, httpStatusCodes.OK, undefined);
     }),
 };
