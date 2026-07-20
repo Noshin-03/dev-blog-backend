@@ -26,4 +26,5 @@ export enum Messages {
     INVALID_TOKEN = 'Token is invalid',
     PASSWORD_INVALID = 'New password must be different from the current password',
     PASSWORD_CHANGE_EMAIL_SENT = 'Mail is sent with change password link',
+    FORBIDDEN = 'You can not do this',
 }

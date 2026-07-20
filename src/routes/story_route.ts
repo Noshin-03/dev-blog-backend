@@ -8,11 +8,8 @@ import {
 } from '../schemas/storySchema';
 import { storyQuerySchema } from '../schemas/querySchema';
 import { authenticate } from '../middlewares/authenticate';
-import {
-    requireOwnerOrAdmin,
-    summaryRateLimit,
-    validate,
-} from '../middlewares';
+import { authorize, summaryRateLimit, validate } from '../middlewares';
+import { getStoryOwnerId } from '../utils/resourceOwnerGetters';
 
 const router = Router();
 
@@ -36,14 +33,18 @@ router.get(
 router.patch(
     '/:storyId',
     authenticate,
-    requireOwnerOrAdmin('userId'),
+    authorize({
+        getResourceOwnerId: getStoryOwnerId,
+    }),
     validate(updateStorySchema),
     asyncHandler(StoryController.updateStory),
 );
 router.delete(
     '/:storyId',
     authenticate,
-    requireOwnerOrAdmin('userId'),
+    authorize({
+        getResourceOwnerId: getStoryOwnerId,
+    }),
     validate(storyIdParamSchema),
     asyncHandler(StoryController.deleteStory),
 );

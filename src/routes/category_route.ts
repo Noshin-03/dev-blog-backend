@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { asyncHandler } from '../utils/asyncHandler';
 import { CategoryController } from '../controllers/categoryController';
-import { requireAdmin, validate, authenticate } from '../middlewares';
+import { authorize, validate, authenticate } from '../middlewares';
 import {
     categoryIdParamSchema,
     createCategorySchema,
@@ -19,21 +19,21 @@ router.get(
 router.post(
     '/',
     authenticate,
-    requireAdmin,
+    authorize({ resource: 'category' }),
     validate(createCategorySchema),
     asyncHandler(CategoryController.createCategory),
 );
 router.patch(
     '/:categoryId',
     authenticate,
-    requireAdmin,
+    authorize({ resource: 'category' }),
     validate(updateCategorySchema),
     asyncHandler(CategoryController.updateCategory),
 );
 router.delete(
     '/:categoryId',
     authenticate,
-    requireAdmin,
+    authorize({ resource: 'category' }),
     validate(categoryIdParamSchema),
     asyncHandler(CategoryController.deleteCategory),
 );

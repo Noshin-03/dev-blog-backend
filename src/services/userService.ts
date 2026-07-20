@@ -10,7 +10,7 @@ import { signEmailToken } from '../utils/jwt';
 import { sendVerificationEmail } from '../utils/mailer';
 
 const userRepository = new UserRepository(prisma);
-const accountRepository = new AccountRepository(prisma);    
+const accountRepository = new AccountRepository(prisma);
 
 export class UserService {
     private async checkById(userId: string) {
@@ -28,38 +28,28 @@ export class UserService {
         data: { email?: string; username?: string },
     ): Promise<{ isVerified?: boolean }> {
         const user = await this.getUserById(id);
- 
+
         if (data.email && data.email !== user.email) {
             const exists = await this.checkByEmail(data.email);
- 
+
             if (exists) {
                 throw new ConflictError(Messages.EMAIL_ALREADY_IN_USE);
             }
- 
+
             return { isVerified: false };
         }
- 
+
         if (data.username && data.username !== user.username) {
             const exists = await this.checkByUsername(data.username);
- 
+
             if (exists) {
                 throw new ConflictError(Messages.USERNAME_ALREADY_IN_USE);
             }
         }
- 
+
         return {};
     }
 
-    private async sendReverificationIfNeeded(
-        updated: { id: string; email: string },
-        updateData: { isVerified?: boolean },
-    ): Promise<void> {
-        if (updateData.isVerified === false) {
-            const emailToken = signEmailToken(updated.id);
-            await sendVerificationEmail(updated.email, emailToken);
-        }
-    }
-    
     async getAllUsers(params: UserQueryParams): Promise<UserResponseDTO[]> {
         const users = await userRepository.getAllUser(params);
 
@@ -117,43 +107,42 @@ export class UserService {
         data: UpdateProfileDTO,
     ): Promise<ProfileResponseDTO> {
         const { isVerified } = await this.checkUpdateConflicts(id, data);
- 
+
         const updateData = {
             ...data,
             ...(isVerified !== undefined && { isVerified }),
         };
- 
+
         const updated = await userRepository.update(id, updateData);
- 
+
         if (isVerified === false) {
             const emailToken = signEmailToken(updated.id);
             await sendVerificationEmail(updated.email, emailToken);
         }
- 
+
         return new ProfileResponseDTO(updated);
     }
- 
+
     async updateUser(
         id: string,
         data: UpdateUserDTO,
     ): Promise<UserResponseDTO> {
         const { isVerified } = await this.checkUpdateConflicts(id, data);
- 
+
         const updateData = {
             ...data,
             ...(isVerified !== undefined && { isVerified }),
         };
- 
+
         const updated = await userRepository.update(id, updateData);
- 
+
         if (isVerified === false) {
             const emailToken = signEmailToken(updated.id);
             await sendVerificationEmail(updated.email, emailToken);
         }
- 
+
         return new UserResponseDTO(updated);
     }
- 
 
     async softDeleteUser(id: string): Promise<UserResponseDTO> {
         await this.checkById(id);
@@ -162,5 +151,4 @@ export class UserService {
 
         return new UserResponseDTO(deleted);
     }
-
 }

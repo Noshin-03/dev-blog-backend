@@ -1,0 +1,42 @@
+{
+  "USER": {
+    "users": {
+      "create": false,
+      "read": "own",
+      "update": "own",
+      "delete": "own"
+    },
+    "stories": {
+      "create": true,
+      "read": true,
+      "update": "own",
+      "delete": "own"
+    },
+    "category": {
+      "create": false,
+      "read": true,
+      "update": false,
+      "delete": false
+    }
+  },
+  "ADMIN": {
+    "users": {
+      "create": true,
+      "read": true,
+      "update": true,
+      "delete": true
+    },
+    "stories": {
+      "create": true,
+      "read": true,
+      "update": true,
+      "delete": true
+    },
+    "category": {
+      "create": true,
+      "read": true,
+      "update": true,
+      "delete": true
+    }
+  }
+}

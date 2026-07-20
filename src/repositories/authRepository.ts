@@ -58,14 +58,4 @@ export class AuthRepository {
             data: { isVerified: true },
         });
     }
-
-    async deleteActiveToken(userId: string) {
-        return this.prisma.auth.update({
-            where: { userId },
-            data: {
-                changePasswordToken: null,
-                isValid: false,
-            },
-        });
-    }
 }

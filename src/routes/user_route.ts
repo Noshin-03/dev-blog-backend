@@ -9,14 +9,14 @@ import {
 } from '../schemas/userSchema';
 import { userQuerySchema } from '../schemas/querySchema';
 import { authenticate } from '../middlewares/authenticate';
-import { requireOwnerOrAdmin, requireAdmin, validate } from '../middlewares';
+import { authorize, validate } from '../middlewares';
 
 const router = Router();
 
 router.get(
     '/',
     authenticate,
-    requireAdmin,
+    authorize(),
     validate(userQuerySchema),
     asyncHandler(UserController.getAllUsers),
 );
@@ -40,14 +40,20 @@ router.patch(
 router.patch(
     '/:userId',
     authenticate,
-    requireOwnerOrAdmin('userId'),
+    authorize({
+        getResourceOwnerId: (req) =>
+            Promise.resolve(req.params.userId as string),
+    }),
     validate(updateUserSchema),
     asyncHandler(UserController.updateUser),
 );
 router.delete(
     '/:userId',
     authenticate,
-    requireOwnerOrAdmin('userId'),
+    authorize({
+        getResourceOwnerId: (req) =>
+            Promise.resolve(req.params.userId as string),
+    }),
     validate(userIdParamSchema),
     asyncHandler(UserController.deleteUser),
 );
