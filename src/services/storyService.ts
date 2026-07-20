@@ -7,14 +7,9 @@ import {
     StoryResponseDTO,
 } from '../dtos/storyDTO';
 import { Messages } from '../constants/messages';
-import {
-    AIError,
-    NotFoundError,
-    UnauthorizedError,
-} from '../common/errorsClass';
+import { NotFoundError } from '../common/errorsClass';
 import { StoryQueryParams } from '../schemas/querySchema';
 import { JwtPayload } from '../utils/jwt';
-import { Role } from '@prisma/client';
 import { generateStorySummary } from '../services/aiService';
 
 const storyRepository = new StoryRepository(prisma);
@@ -39,7 +34,6 @@ export class StoryService {
         const stories = await storyRepository.findAll(params);
         return stories.map((story) => new ListStoryDTO(story));
     }
-    //FIXME: change id to storyId
 
     async getStoryById(storyId: string): Promise<StoryResponseDTO> {
         const story = await storyRepository.getById(storyId);
@@ -50,8 +44,7 @@ export class StoryService {
 
         return new StoryResponseDTO(story);
     }
-    //FIXME: repeated check
-    //FIXME: change id to storyId
+
     async regenerateSummary(
         storyId: string,
         requestingUser: JwtPayload,
@@ -67,8 +60,7 @@ export class StoryService {
 
         return new StoryResponseDTO(updated);
     }
-    //FIXME: repeated check
-    //FIXME: change id to storyId
+
     async updateStory(
         storyId: string,
         data: UpdateStoryDTO,
@@ -84,8 +76,14 @@ export class StoryService {
         const hasBodyChanged = data.body !== undefined;
 
         if (hasBodyChanged) {
-            const summary = await generateStorySummary(updated.title, updated.body);
-            const withSummary = await storyRepository.storeSummary(updated.storyId, summary);
+            const summary = await generateStorySummary(
+                updated.title,
+                updated.body,
+            );
+            const withSummary = await storyRepository.storeSummary(
+                updated.storyId,
+                summary,
+            );
 
             updated.summary = withSummary.summary;
         }
@@ -93,9 +91,7 @@ export class StoryService {
         return new StoryResponseDTO(updated);
     }
 
-    async deleteStory(
-        storyId: string,
-    ): Promise<void> {
+    async deleteStory(storyId: string): Promise<void> {
         const story = await storyRepository.getById(storyId);
         if (!story) {
             throw new NotFoundError(Messages.STORY_NOT_FOUND);

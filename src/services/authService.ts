@@ -38,7 +38,6 @@ const userService = new UserService();
 
 export class AuthService {
     async signup(data: RegisterDTO) {
-        //FIXME: fix error names
         const exitingEmail = await userService.checkByEmail(data.email);
         if (exitingEmail) {
             throw new ConflictError(Messages.EMAIL_ALREADY_IN_USE);
@@ -128,7 +127,10 @@ export class AuthService {
             throw new UnauthorizedError(Messages.INVALID_CREDENTIALS);
         }
 
-        const passwordMatch = await bcrypt.compare(data.oldPassword, auth.password);
+        const passwordMatch = await bcrypt.compare(
+            data.oldPassword,
+            auth.password,
+        );
         if (!passwordMatch) {
             throw new UnauthorizedError(Messages.INVALID_CREDENTIALS);
         }

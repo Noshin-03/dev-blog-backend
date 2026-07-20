@@ -1,6 +1,10 @@
 import nodemailer from 'nodemailer';
 import { env } from '../config/env';
-import { baseEmailTemplate, emailButton, emailLinkFallback } from './emailTemplate';
+import {
+    baseEmailTemplate,
+    emailButton,
+    emailLinkFallback,
+} from './emailTemplate';
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -11,7 +15,7 @@ const transporter = nodemailer.createTransport({
         pass: env.MAIL_PASSWORD,
     },
 });
-//FIXME: template banate hbe
+
 export const sendVerificationEmail = async (
     to: string,
     token: string,
