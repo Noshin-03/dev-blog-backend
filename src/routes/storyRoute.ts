@@ -7,6 +7,7 @@ import {
     updateStorySchema,
     storyIdParamSchema,
 } from '../schemas/storySchema';
+import { storyQuerySchema } from '../schemas/querySchema';
 
 const router = Router();
 
@@ -15,7 +16,11 @@ router.post(
     validate(createStorySchema),
     asyncHandler(StoryController.createStory),
 );
-router.get('/', asyncHandler(StoryController.getAllStories));
+router.get(
+    '/',
+    validate(storyQuerySchema),
+    asyncHandler(StoryController.getAllStories),
+);
 router.get(
     '/:storyId',
     validate(storyIdParamSchema),

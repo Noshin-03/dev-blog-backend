@@ -7,6 +7,7 @@ import {
 } from '../dtos/storyDTO';
 import { Messages } from '../constants/messages';
 import { NotFoundError } from '../common/errorsClass';
+import { StoryQueryParams } from '../schemas/querySchema';
 
 const storyRepository = new StoryRepository(prisma);
 
@@ -16,8 +17,8 @@ export class StoryService {
         return new StoryResponseDTO(story);
     }
 
-    async getAllStories(): Promise<StoryResponseDTO[]> {
-        const stories = await storyRepository.findAll();
+    async getAllStories(params: StoryQueryParams): Promise<StoryResponseDTO[]> {
+        const stories = await storyRepository.findAll(params);
         return stories.map((story) => new StoryResponseDTO(story));
     }
 

@@ -3,6 +3,9 @@ import { UserService } from '../services/userService';
 import { asyncHandler } from '../utils/asyncHandler';
 import { httpStatusCodes } from '../constants/statusCode';
 import { sendResponse } from '../utils/response';
+import { CreateUserDTO, UpdateUserDTO } from '../dtos/userDTO';
+import { UserQueryParams } from '../schemas/querySchema';
+import { getBody, getParams, getQuery } from '../utils/request';
 
 const userService = new UserService();
 
@@ -12,8 +15,9 @@ export const UserController = {
         sendResponse(res, httpStatusCodes.CREATED, user);
     }),
 
-    getAllUsers: asyncHandler(async (_req, res: Response) => {
-        const users = await userService.getAllUsers();
+    getAllUsers: asyncHandler(async (req, res) => {
+        const query = getQuery<UserQueryParams>(req);
+        const users = await userService.getAllUsers(query);
         sendResponse(res, httpStatusCodes.OK, users);
     }),
 

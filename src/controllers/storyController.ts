@@ -4,6 +4,8 @@ import { asyncHandler } from '../utils/asyncHandler';
 import { httpStatusCodes } from '../constants/statusCode';
 import { sendResponse } from '../utils/response';
 import { Messages } from '../constants/messages';
+import { StoryQueryParams } from '../schemas/querySchema';
+import { getQuery } from '../utils/request';
 
 const storyService = new StoryService();
 
@@ -14,8 +16,9 @@ export const StoryController = {
         sendResponse(res, httpStatusCodes.CREATED, story);
     }),
 
-    getAllStories: asyncHandler(async (_req, res: Response) => {
-        const stories = await storyService.getAllStories();
+    getAllStories: asyncHandler(async (req, res: Response) => {
+        const query = getQuery<StoryQueryParams>(req);
+        const stories = await storyService.getAllStories(query);
         sendResponse(res, httpStatusCodes.OK, stories);
     }),
 

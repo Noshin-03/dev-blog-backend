@@ -12,3 +12,9 @@ export const StoryValidation = {
     MAX: 100,
     BODY: 10,
 } as const;
+
+export const Pagination = {
+    PAGE: 1,
+    ItemsPerPage: 10,
+    MAX: 100,
+};
