@@ -5,4 +5,10 @@ export enum Messages {
     USER_NOT_FOUND = 'User not found',
     STORY_NOT_FOUND = 'Story not found',
     STORY_DELETED = 'Story deleted successfully',
+    INVALID_CREDENTIALS = 'Invalid email or password',
+    TOKEN_REQUIRED = 'Authentication token is required',
+    TOKEN_INVALID = 'Invalid or expired token',
+    ADMIN_ONLY = 'Admin access required',
+    CHANGED = 'Password changed successfully',
+    UNAUTHORIZED = 'You do not have permission to perform this action',
 }

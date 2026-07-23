@@ -18,10 +18,6 @@ const getUserWhere = (params: UserQueryParams): Prisma.UserWhereInput => {
 export class UserRepository {
     constructor(private prisma: PrismaClient) {}
 
-    async create(user: CreateUserDTO): Promise<User> {
-        return this.prisma.user.create({ data: user });
-    }
-
     async getAllUser(params: UserQueryParams): Promise<User[]> {
         const { page, itemsPerPage, orderBy } = params;
         const where = getUserWhere(params);
@@ -36,6 +32,18 @@ export class UserRepository {
     async getUserById(id: string): Promise<User | null> {
         return this.prisma.user.findFirst({
             where: { id, isDeleted: false },
+        });
+    }
+
+    async getUserByEmail(email: string): Promise<User | null> {
+        return this.prisma.user.findFirst({
+            where: { email, isDeleted: false },
+        });
+    }
+
+    async getUserByUsername(username: string): Promise<User | null> {
+        return this.prisma.user.findFirst({
+            where: { username, isDeleted: false },
         });
     }
 
@@ -67,13 +75,6 @@ export class UserRepository {
         return this.prisma.user.update({
             where: { id },
             data: user,
-        });
-    }
-
-    async softDelete(id: string): Promise<User> {
-        return this.prisma.user.update({
-            where: { id },
-            data: { isDeleted: true },
         });
     }
 }
