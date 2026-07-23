@@ -3,6 +3,7 @@ import healthRoute from './healthRoute';
 import userRoutes from './userRoute';
 import storyRoutes from './storyRoute';
 import authRoutes from './authRoute';
+import categoryRoutes from './categoryRoutes';
 
 const routes = Router();
 

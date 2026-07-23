@@ -2,17 +2,20 @@ import { AuthService } from '../services/authService';
 import { asyncHandler } from '../utils/asyncHandler';
 import { httpStatusCodes } from '../constants/statusCode';
 import { sendResponse } from '../utils/response';
+import { setAuthCookie } from '../utils/setCookie';
 
 const authService = new AuthService();
 
 export const AuthController = {
     signup: asyncHandler(async (req, res) => {
         const result = await authService.signup(req.body);
+        setAuthCookie(res, result.token);
         sendResponse(res, httpStatusCodes.CREATED, result);
     }),
 
     login: asyncHandler(async (req, res) => {
         const result = await authService.login(req.body);
+        setAuthCookie(res, result.token);
         sendResponse(res, httpStatusCodes.OK, result);
     }),
 
