@@ -66,4 +66,4 @@ pids/
 prisma/*.db
 prisma/*.db-journal
 /src/generated/prisma
-**/.puku/
+.puku/

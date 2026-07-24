@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { StoryController } from '../controllers/storyController';
 import { asyncHandler } from '../utils/asyncHandler';
-import { validate } from '../middlewares/validate';
 import {
     createStorySchema,
     updateStorySchema,
@@ -9,12 +8,14 @@ import {
 } from '../schemas/storySchema';
 import { storyQuerySchema } from '../schemas/querySchema';
 import { authenticate } from '../middlewares/authenticate';
-import { requireOwnerOrAdmin } from '../middlewares/authorize';
+import { authorize, summaryRateLimit, validate } from '../middlewares';
+import { getStoryOwnerId } from '../utils/resourceOwnerGetters';
 
 const router = Router();
 
 router.post(
     '/',
+    authenticate,
     validate(createStorySchema),
     asyncHandler(StoryController.createStory),
 );
@@ -32,16 +33,28 @@ router.get(
 router.patch(
     '/:storyId',
     authenticate,
-    requireOwnerOrAdmin('userId'),
+    authorize({
+        getResourceOwnerId: getStoryOwnerId,
+    }),
     validate(updateStorySchema),
     asyncHandler(StoryController.updateStory),
 );
 router.delete(
     '/:storyId',
     authenticate,
-    requireOwnerOrAdmin('userId'),
+    authorize({
+        getResourceOwnerId: getStoryOwnerId,
+    }),
     validate(storyIdParamSchema),
     asyncHandler(StoryController.deleteStory),
+);
+
+router.post(
+    '/:storyId/regenerate-summary',
+    authenticate,
+    summaryRateLimit,
+    validate(storyIdParamSchema),
+    asyncHandler(StoryController.regenerateSummary),
 );
 
 export default router;

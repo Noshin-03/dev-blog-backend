@@ -12,6 +12,7 @@ export class UserResponseDTO {
     public readonly email: string;
     public readonly joinDate: Date;
     public readonly role: Role;
+    public readonly isVerified: boolean;
 
     constructor(user: User) {
         this.id = user.id;
@@ -20,5 +21,6 @@ export class UserResponseDTO {
         this.email = user.email;
         this.joinDate = user.joinDate;
         this.role = user.role;
+        this.isVerified = user.isVerified;
     }
 }

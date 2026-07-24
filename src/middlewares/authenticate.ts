@@ -9,12 +9,13 @@ export const authenticate = (
     next: NextFunction,
 ) => {
     const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    const headerToken = authHeader?.startsWith('Bearer ')
+        ? authHeader.split(' ')[1]
+        : undefined;
+    const token = req.cookies?.token ?? headerToken;
+    if (!token) {
         throw new UnauthorizedError(Messages.TOKEN_REQUIRED);
     }
-
-    const token = authHeader.split(' ')[1];
 
     try {
         const decoded = verifyToken(token);

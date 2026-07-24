@@ -19,4 +19,14 @@ export const env = {
 
     JWT_SECRET: required('JWT_SECRET'),
     JWT_EXPIRATION: required('JWT_EXPIRATION') as StringValue,
+
+    GMAIL: required('GMAIL'),
+    MAIL_PASSWORD: required('MAIL_PASSWORD'),
+    CLIENT_URL: required('CLIENT_URL'),
+    EMAIL_JWT_SECRET: required('EMAIL_JWT_SECRET'),
+
+    GEMINI_API_KEY: required('GEMINI_API_KEY'),
+    SUMMARY_MAX_INPUT_CHARS: Number(
+        process.env.SUMMARY_MAX_INPUT_CHARS ?? 5000,
+    ),
 } as const;

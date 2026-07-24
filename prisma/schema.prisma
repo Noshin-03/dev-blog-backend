@@ -20,9 +20,11 @@ model User {
   username  String   @unique
   name      String
   email     String   @unique
+  avatarUrl String?
   joinDate  DateTime @default(now())
   role      Role     @default(USER)
   isDeleted Boolean  @default(false)
+  isVerified Boolean @default(false)
 
   auth      Auth?
   stories   Story[]
@@ -34,6 +36,8 @@ model Auth {
   userId                       String   @id
   password                     String
   passwordLastModificationTime DateTime @default(now())
+  changePasswordToken          String?
+  isValid                      Boolean  @default(false)
 
   user User @relation(fields: [userId], references: [id])
 
@@ -45,10 +49,36 @@ model Story {
   userId    String
   title     String
   body      String   
+  summary            String?                     
+  autoSummarize      Boolean   @default(true)  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  categories  StoryCategory[]
 
   user User @relation(fields: [userId], references: [id])
 
   @@map("stories")
+}
+
+model Category {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  description String?
+  createdAt   DateTime  @default(now())
+
+  stories     StoryCategory[]
+
+  @@map("categories")
+}
+
+model StoryCategory {
+  storyId    String
+  categoryId String
+
+  story    Story    @relation(fields: [storyId], references: [storyId], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([storyId, categoryId])
+  @@map("story_categories")
 }

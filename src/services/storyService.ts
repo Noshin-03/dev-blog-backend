@@ -3,50 +3,100 @@ import { StoryRepository } from '../repositories/storyRepository';
 import {
     CreateStoryDTO,
     UpdateStoryDTO,
+    ListStoryDTO,
     StoryResponseDTO,
 } from '../dtos/storyDTO';
 import { Messages } from '../constants/messages';
 import { NotFoundError } from '../common/errorsClass';
 import { StoryQueryParams } from '../schemas/querySchema';
+import { JwtPayload } from '../utils/jwt';
+import { generateStorySummary } from '../services/aiService';
 
 const storyRepository = new StoryRepository(prisma);
 
 export class StoryService {
-    async createStory(data: CreateStoryDTO): Promise<StoryResponseDTO> {
-        const story = await storyRepository.create(data);
+    async createStory(
+        userId: string,
+        data: CreateStoryDTO,
+    ): Promise<StoryResponseDTO> {
+        const story = await storyRepository.create(userId, data);
+
+        if (data.autoSummarize) {
+            const summary = await generateStorySummary(story.title, story.body);
+            await storyRepository.storeSummary(story.storyId, summary);
+            story.summary = summary;
+        }
+
         return new StoryResponseDTO(story);
     }
 
-    async getAllStories(params: StoryQueryParams): Promise<StoryResponseDTO[]> {
+    async getAllStories(params: StoryQueryParams): Promise<ListStoryDTO[]> {
         const stories = await storyRepository.findAll(params);
-        return stories.map((story) => new StoryResponseDTO(story));
+        return stories.map((story) => new ListStoryDTO(story));
     }
 
-    async getStoryById(id: string): Promise<StoryResponseDTO> {
-        const story = await storyRepository.getById(id);
+    async getStoryById(storyId: string): Promise<StoryResponseDTO> {
+        const story = await storyRepository.getById(storyId);
+
         if (!story) {
             throw new NotFoundError(Messages.STORY_NOT_FOUND);
         }
+
         return new StoryResponseDTO(story);
     }
 
-    async updateStory(
-        id: string,
-        data: UpdateStoryDTO,
+    async regenerateSummary(
+        storyId: string,
+        requestingUser: JwtPayload,
     ): Promise<StoryResponseDTO> {
-        const exists = await storyRepository.checkById(id);
-        if (!exists) {
+        const story = await storyRepository.getById(storyId);
+        if (!story) {
             throw new NotFoundError(Messages.STORY_NOT_FOUND);
         }
-        const updated = await storyRepository.update(id, data);
+
+        const summary = await generateStorySummary(story.title, story.body);
+
+        const updated = await storyRepository.storeSummary(storyId, summary);
+
         return new StoryResponseDTO(updated);
     }
 
-    async deleteStory(id: string): Promise<void> {
-        const exists = await storyRepository.checkById(id);
-        if (!exists) {
+    async updateStory(
+        storyId: string,
+        data: UpdateStoryDTO,
+    ): Promise<StoryResponseDTO> {
+        const story = await storyRepository.getById(storyId);
+
+        if (!story) {
             throw new NotFoundError(Messages.STORY_NOT_FOUND);
         }
-        await storyRepository.delete(id);
+
+        const updated = await storyRepository.update(storyId, data);
+
+        const hasBodyChanged = data.body !== undefined;
+
+        if (hasBodyChanged) {
+            const summary = await generateStorySummary(
+                updated.title,
+                updated.body,
+            );
+            const withSummary = await storyRepository.storeSummary(
+                updated.storyId,
+                summary,
+            );
+
+            updated.summary = withSummary.summary;
+        }
+
+        return new StoryResponseDTO(updated);
+    }
+
+    async deleteStory(storyId: string): Promise<void> {
+        const story = await storyRepository.getById(storyId);
+        if (!story) {
+            throw new NotFoundError(Messages.STORY_NOT_FOUND);
+        }
+
+        await storyRepository.delete(storyId);
     }
 }

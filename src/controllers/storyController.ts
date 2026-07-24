@@ -11,8 +11,8 @@ const storyService = new StoryService();
 
 export const StoryController = {
     createStory: asyncHandler(async (req, res: Response) => {
-        const { body } = req.body;
-        const story = await storyService.createStory(body);
+        const userId = req.user?.userId;
+        const story = await storyService.createStory(userId, req.body);
         sendResponse(res, httpStatusCodes.CREATED, story);
     }),
 
@@ -28,20 +28,25 @@ export const StoryController = {
         sendResponse(res, httpStatusCodes.OK, story);
     }),
 
-    updateStory: asyncHandler(async (req, res: Response) => {
+    regenerateSummary: asyncHandler(async (req, res) => {
         const storyId = req.params.storyId as string;
-        const story = await storyService.updateStory(storyId, req.body);
+        const story = await storyService.regenerateSummary(storyId, req.user!);
+        sendResponse(res, httpStatusCodes.OK, story);
+    }),
+
+    updateStory: asyncHandler(async (req, res) => {
+        const storyId = req.params.storyId as string;
+        const story = await storyService.updateStory(
+            storyId,
+            req.body,
+        );
         sendResponse(res, httpStatusCodes.OK, story);
     }),
 
     deleteStory: asyncHandler(async (req, res: Response) => {
         const storyId = req.params.storyId as string;
         await storyService.deleteStory(storyId);
-        sendResponse(
-            res,
-            httpStatusCodes.OK,
-            undefined,
-            Messages.STORY_DELETED,
-        );
+
+        sendResponse(res, httpStatusCodes.OK, undefined);
     }),
 };
