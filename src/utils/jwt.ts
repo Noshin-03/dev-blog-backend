@@ -49,7 +49,7 @@ export const signPasswordChangeToken = (userId: string): string => {
         },
         env.JWT_SECRET,
         {
-            expiresIn: env.JWT_EXPIRATION,
+            expiresIn: env.PASSWORD_JWT_EXPIRATION,
         },
     );
 };

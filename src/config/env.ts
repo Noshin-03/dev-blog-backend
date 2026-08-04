@@ -24,6 +24,7 @@ export const env = {
     MAIL_PASSWORD: required('MAIL_PASSWORD'),
     CLIENT_URL: required('CLIENT_URL'),
     EMAIL_JWT_SECRET: required('EMAIL_JWT_SECRET'),
+    PASSWORD_JWT_EXPIRATION: required('PASSWORD_JWT_EXPIRATION') as StringValue,
 
     GEMINI_API_KEY: required('GEMINI_API_KEY'),
     SUMMARY_MAX_INPUT_CHARS: Number(

@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient, User } from '@prisma/client';
-import { CreateUserDTO, UpdateUserDTO } from '../dtos/userDTO';
+import { UpdateUserDTO } from '../dtos/userDTO';
 import { UserQueryParams } from '../schemas/querySchema';
 
 const getUserWhere = (params: UserQueryParams): Prisma.UserWhereInput => {
@@ -43,7 +43,18 @@ export class UserRepository {
 
     async getUserByUsername(username: string): Promise<User | null> {
         return this.prisma.user.findFirst({
-            where: { username, isDeleted: false },
+            where: {
+                username,
+                isDeleted: false,
+            },
+            include: {
+                stories: {
+                    select: {
+                        storyId: true,
+                        title: true,
+                    },
+                },
+            },
         });
     }
 

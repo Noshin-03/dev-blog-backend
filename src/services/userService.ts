@@ -5,7 +5,11 @@ import { NotFoundError, ConflictError } from '../common/errorsClass';
 import { Messages } from '../constants/messages';
 import { UserQueryParams } from '../schemas/querySchema';
 import { AccountRepository } from '../repositories/accountRepository';
-import { ProfileResponseDTO, UpdateProfileDTO } from '../dtos/profileDTO';
+import {
+    OthersProfileDTO,
+    ProfileResponseDTO,
+    UpdateProfileDTO,
+} from '../dtos/profileDTO';
 import { signEmailToken } from '../utils/jwt';
 import { sendVerificationEmail } from '../utils/mailer';
 
@@ -92,14 +96,14 @@ export class UserService {
         return new UserResponseDTO(user);
     }
 
-    async getUserByUsername(username: string): Promise<UserResponseDTO> {
+    async getUserByUsername(username: string): Promise<OthersProfileDTO> {
         const user = await userRepository.getUserByUsername(username);
 
         if (!user) {
             throw new NotFoundError(Messages.USER_NOT_FOUND);
         }
 
-        return new UserResponseDTO(user);
+        return new OthersProfileDTO(user);
     }
 
     async updateProfile(

@@ -15,7 +15,7 @@ export const StoryValidation = {
 
 export const Pagination = {
     PAGE: 1,
-    ItemsPerPage: 10,
+    ItemsPerPage: 12,
     MAX: 100,
 };
 

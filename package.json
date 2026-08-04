@@ -60,7 +60,7 @@
         "typecheck": "tsc --noEmit"
     },
     "prisma": {
-        "seed": "tsx prisma/seed.ts"
+        "seed": "tsx prisma/seeds/seed.ts"
     },
     "lint-staged": {
         "*.ts": [

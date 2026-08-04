@@ -26,7 +26,6 @@ router.get(
 );
 router.get(
     '/:storyId',
-    authenticate,
     validate(storyIdParamSchema),
     asyncHandler(StoryController.getStoryById),
 );

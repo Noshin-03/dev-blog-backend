@@ -30,9 +30,18 @@ export class StoryService {
         return new StoryResponseDTO(story);
     }
 
-    async getAllStories(params: StoryQueryParams): Promise<ListStoryDTO[]> {
-        const stories = await storyRepository.findAll(params);
-        return stories.map((story) => new ListStoryDTO(story));
+    async getAllStories(
+        params: StoryQueryParams,
+    ): Promise<{ items: ListStoryDTO[]; total: number }> {
+        const [stories, total] = await Promise.all([
+            storyRepository.findAll(params),
+            storyRepository.count(params),
+        ]);
+
+        return {
+            items: stories.map((story) => new ListStoryDTO(story)),
+            total,
+        };
     }
 
     async getStoryById(storyId: string): Promise<StoryResponseDTO> {

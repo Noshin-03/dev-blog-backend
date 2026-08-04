@@ -28,7 +28,7 @@ export const sendVerificationEmail = async (
         <p>Please verify your email address by clicking the button below.</p>
         <p>This link expires in <strong>5 minutes</strong>.</p>
         ${emailButton(verifyUrl, 'Verify Email')}
-        ${emailLinkFallback(verifyUrl)}
+        
         <p>If you didn't create an account, ignore this email.</p>
         `,
     );
@@ -53,8 +53,8 @@ export const sendPasswordChangeEmail = async (
         <p>We received a request to change your DevBlog password.</p>
         <p>Click the button below to continue:</p>
         ${emailButton(changePasswordUrl, 'Change Password')}
-        ${emailLinkFallback(changePasswordUrl)}
-        <p>This link expires in <strong>5 minutes</strong>.</p>
+        
+        <p>This link expires in <strong>${env.PASSWORD_JWT_EXPIRATION}</strong>.</p>
         <p>If you did not request this change, ignore this email.</p>
         `,
     );

@@ -1,8 +1,5 @@
 import { Prisma, PrismaClient, Story } from '@prisma/client';
-import {
-    CreateStoryDTO,
-    UpdateStoryDTO,
-} from '../dtos/storyDTO';
+import { CreateStoryDTO, UpdateStoryDTO } from '../dtos/storyDTO';
 import { StoryQueryParams } from '../schemas/querySchema';
 
 const getStoryWhere = (params: StoryQueryParams): Prisma.StoryWhereInput => {
@@ -50,6 +47,11 @@ export class StoryRepository {
                 categories: { include: { category: true } },
             },
         });
+    }
+
+    async count(params: StoryQueryParams): Promise<number> {
+        const where = getStoryWhere(params);
+        return this.prisma.story.count({ where });
     }
 
     async findAll(params: StoryQueryParams): Promise<Story[]> {

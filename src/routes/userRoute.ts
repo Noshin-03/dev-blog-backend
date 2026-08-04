@@ -30,6 +30,11 @@ router.get(
     asyncHandler(UserController.getUserById),
 );
 
+router.get(
+    '/profile/:username',
+    asyncHandler(UserController.getUserByUsername),
+);
+
 router.patch(
     '/profile',
     authenticate,
