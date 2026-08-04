@@ -14,3 +14,11 @@ export const setAuthCookie = (
         maxAge: COOKIE_MAX_AGE_MS,
     });
 };
+
+export const clearAuthCookie = (res: import('express').Response) => {
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: env.NODE_ENV === 'production',
+        sameSite: 'strict',
+    });
+};

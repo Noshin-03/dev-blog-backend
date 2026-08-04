@@ -45,31 +45,6 @@ const userSeeds = [
         email: 'mitu@devblog.com',
     },
     {
-        username: 'arjun',
-        name: 'Arjun Das',
-        email: 'arjun@devblog.com',
-    },
-    {
-        username: 'priya',
-        name: 'Priya Sharma',
-        email: 'priya@devblog.com',
-    },
-    {
-        username: 'tanvir',
-        name: 'Tanvir Ahmed',
-        email: 'tanvir@devblog.com',
-    },
-    {
-        username: 'lubna',
-        name: 'Lubna Yasmin',
-        email: 'lubna@devblog.com',
-    },
-    {
-        username: 'imran',
-        name: 'Imran Khan',
-        email: 'imran@devblog.com',
-    },
-    {
         username: 'nusrat',
         name: 'Nusrat Jahan',
         email: 'nusrat@devblog.com',
@@ -78,16 +53,6 @@ const userSeeds = [
         username: 'shuvo',
         name: 'Shuvo Rahman',
         email: 'shuvo@devblog.com',
-    },
-    {
-        username: 'mahin',
-        name: 'Mahin Sarker',
-        email: 'mahin@devblog.com',
-    },
-    {
-        username: 'rima',
-        name: 'Rima Chowdhury',
-        email: 'rima@devblog.com',
     },
     {
         username: 'zayed',

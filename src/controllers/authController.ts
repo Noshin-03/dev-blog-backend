@@ -2,21 +2,21 @@ import { AuthService } from '../services/authService';
 import { asyncHandler } from '../utils/asyncHandler';
 import { httpStatusCodes } from '../constants/statusCode';
 import { sendResponse } from '../utils/response';
-import { setAuthCookie } from '../utils/setCookie';
+import { clearAuthCookie, setAuthCookie } from '../utils/setCookie';
 
 const authService = new AuthService();
 
 export const AuthController = {
     signup: asyncHandler(async (req, res) => {
         const result = await authService.signup(req.body);
-        setAuthCookie(res, result.token);
         sendResponse(res, httpStatusCodes.CREATED, result);
     }),
 
     login: asyncHandler(async (req, res) => {
         const result = await authService.login(req.body);
         setAuthCookie(res, result.token);
-        sendResponse(res, httpStatusCodes.OK, result);
+
+        sendResponse(res, httpStatusCodes.OK, { user: result.user });
     }),
 
     confirmEmail: asyncHandler(async (req, res) => {
@@ -39,5 +39,10 @@ export const AuthController = {
     confirmPasswordChange: asyncHandler(async (req, res) => {
         const result = await authService.confirmPasswordChange(req.body);
         sendResponse(res, httpStatusCodes.OK, result);
+    }),
+
+    logout: asyncHandler(async (req, res) => {
+        clearAuthCookie(res);
+        sendResponse(res, httpStatusCodes.OK);
     }),
 };

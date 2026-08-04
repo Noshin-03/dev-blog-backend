@@ -50,4 +50,6 @@ router.post(
     asyncHandler(AuthController.confirmPasswordChange),
 );
 
+router.post('/logout', asyncHandler(AuthController.logout));
+
 export default router;

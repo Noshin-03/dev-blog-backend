@@ -33,7 +33,7 @@ export const signEmailToken = (userId: string): string => {
     return jwt.sign(
         { userId, purpose: 'email-verification' },
         env.EMAIL_JWT_SECRET,
-        { expiresIn: env.JWT_EXPIRATION },
+        { expiresIn: env.PASSWORD_JWT_EXPIRATION },
     );
 };
 

@@ -1,10 +1,6 @@
 import nodemailer from 'nodemailer';
 import { env } from '../config/env';
-import {
-    baseEmailTemplate,
-    emailButton,
-    emailLinkFallback,
-} from './emailTemplate';
+import { baseEmailTemplate, emailButton } from './emailTemplate';
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
