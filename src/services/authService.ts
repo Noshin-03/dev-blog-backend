@@ -62,15 +62,15 @@ export class AuthService {
         const emailToken = signEmailToken(user.id);
         await sendVerificationEmail(user.email, emailToken);
 
-        const token = signToken({
-            userId: user.id,
-            username: user.username,
-            email: user.email,
-            role: user.role,
-        });
+        // const token = signToken({
+        //     userId: user.id,
+        //     username: user.username,
+        //     email: user.email,
+        //     role: user.role,
+        // });
 
         return {
-            token,
+            //token,
             user: {
                 id: user.id,
                 username: user.username,

@@ -58,12 +58,6 @@ const storySeeds = [
         categoryNames: ['Lifestyle', 'Health'],
     },
     {
-        authorUsername: 'farhan',
-        title: 'Building a Reading Habit That Actually Sticks',
-        body: 'Most attempts to "read more" fail for the same reason most New Year\'s resolutions fail — they start with an ambitious goal and no actual system to sustain it. Reading twelve books this year sounds nice, but it doesn\'t tell you what to do on a random Tuesday when you\'re tired and the TV is right there.\n\nWhat actually works is smaller and less glamorous: keeping a book physically visible instead of buried in a drawer, lowering the bar to "read one page" on hard days, and giving yourself full permission to abandon a book that isn\'t working rather than forcing your way through it out of guilt. Consistency over weeks and months, at a pace that feels almost too easy, beats an ambitious streak that burns out by February.',
-        categoryNames: ['Lifestyle', 'Education'],
-    },
-    {
         authorUsername: 'mitu',
         title: 'The Art of Saying No Without Guilt',
         body: 'Saying yes feels good in the moment and costly later — an overcommitted calendar is usually the result of a hundred individually reasonable-seeming yeses that added up to something unsustainable. Learning to say no well is less about willpower and more about having a few honest, low-drama phrases ready before you need them.\n\nA clear, brief no — without an over-explained justification — tends to land better than a long apologetic one, which can read as an invitation to negotiate. The uncomfortable truth is that every yes is also, implicitly, a no to something else, usually something closer to your actual priorities. Getting comfortable with that trade-off is most of what "boundaries" actually means in practice.',
@@ -83,12 +77,6 @@ const storySeeds = [
         authorUsername: 'sara',
         title: 'The Hidden Cost of Constant Context Switching at Work',
         body: 'Open-plan offices and chat apps have made it trivially easy to interrupt a colleague, and trivially easy to be interrupted — which sounds efficient in the moment but is quietly expensive in aggregate. Studies on task-switching consistently find that it takes meaningful time to fully re-engage with deep work after even a short interruption.\n\nTeams that protect blocks of uninterrupted time — no-meeting mornings, explicit "do not disturb" norms, batching messages instead of answering in real time — tend to ship complex work faster, not slower, even though it can feel counterintuitive to be less immediately responsive. The productivity lost to constant availability rarely shows up on anyone\'s dashboard, which is exactly why it\'s so persistently underestimated.',
-        categoryNames: ['Business'],
-    },
-    {
-        authorUsername: 'kabir',
-        title: 'How to Run a Meeting People Don\u2019t Dread',
-        body: "Most meetings fail for one of two reasons: no clear purpose, or a purpose that didn't actually need a meeting in the first place. A status update that could have been a written summary, sent to a channel and read in two minutes, is a common and easily fixable offender.\n\nMeetings that do earn their place tend to share a few habits — a written agenda circulated in advance, a clear owner and decision to be made by the end, and a hard stop that's actually respected. Ending five minutes early more often than not is a better signal of a well-run meeting than filling every allotted minute out of habit.",
         categoryNames: ['Business'],
     },
     {
@@ -164,12 +152,6 @@ const storySeeds = [
         categoryNames: ['Health'],
     },
     {
-        authorUsername: 'anika',
-        title: 'Managing Screen Time Eye Strain',
-        body: 'Digital eye strain has become almost universal in office and remote-work jobs, showing up as dryness, headaches, and blurred vision after long stretches in front of a screen — largely because people blink significantly less often while focused on a display than they do during normal activity.\n\nThe 20-20-20 rule — every twenty minutes, look at something twenty feet away for twenty seconds — remains one of the simplest and best-supported interventions, since it gives the eye muscles a genuine break from sustained close-focus effort. Screen brightness matched to ambient room lighting, and simply remembering to blink consciously during focused work, round out most of what actually helps, well before more expensive interventions like specialty glasses become necessary.',
-        categoryNames: ['Health', 'Technology'],
-    },
-    {
         authorUsername: 'sabbir',
         title: 'The Basics of Mindful Eating',
         body: "Mindful eating gets sometimes dismissed as a vague wellness buzzword, but stripped of the jargon, it's a fairly concrete practice: eating without distraction, paying attention to actual hunger and fullness cues, and noticing the taste and texture of food rather than eating on autopilot while scrolling a phone or watching TV.\n\nThe research behind it is reasonably solid — people who eat mindfully tend to naturally eat slower and stop closer to genuine satiety, largely because it takes roughly twenty minutes for fullness signals to fully register, a window that's easy to blow straight through when eating quickly and distractedly. It's not a diet in any conventional sense, which is part of why it tends to be more sustainable than approaches built around restriction.",
@@ -190,12 +172,6 @@ const storySeeds = [
         title: 'Solo Travel Safety Tips That Actually Matter',
         body: "A lot of solo travel safety advice online is either painfully obvious or, worse, actively counterproductive — vague fear-based warnings that discourage travel altogether rather than genuinely useful, actionable guidance. The advice that actually holds up tends to be far more specific and practical.\n\nSharing a rough daily itinerary with someone back home, keeping a digital copy of important documents somewhere accessible offline, and researching a neighborhood's general safety before booking accommodation there matter far more than most of the more dramatic advice that circulates. Trusting a calm, specific instinct that something feels wrong — and being willing to act on it immediately without second-guessing yourself out of politeness — remains one of the single most effective safety tools any traveler has.",
         categoryNames: ['Travel'],
-    },
-    {
-        authorUsername: 'nusrat',
-        title: 'Budget Train Travel Across Europe',
-        body: "Europe's train network remains one of the more underrated ways to see the continent, especially for travelers willing to plan a little ahead and book tickets well before departure, when fares are considerably cheaper than the last-minute prices most casual travelers end up paying.\n\nOvernight trains deserve more attention than they usually get — they let you cover significant distance while sleeping, effectively saving a night of accommodation cost, and arriving in a new city first thing in the morning rather than losing half a travel day to a flight and airport transfers. A rail pass makes sense for travelers covering many countries in a short window, but for a more focused trip through two or three regions, individual point-to-point tickets booked in advance are often the cheaper option.",
-        categoryNames: ['Travel', 'Finance'],
     },
     {
         authorUsername: 'shuvo',
@@ -220,18 +196,6 @@ const storySeeds = [
         categoryNames: ['Science'],
     },
     {
-        authorUsername: 'sara',
-        title: 'How Vaccines Actually Train the Immune System',
-        body: 'A vaccine works by giving the immune system a safe preview of a threat — a harmless piece or weakened version of a pathogen — so the body can build a targeted defense before ever encountering the real, dangerous version.\n\nThe key players in this process are memory cells, a specialized subset of immune cells that persist long after the initial exposure and "remember" exactly how to recognize and respond to that specific threat far faster the second time around. This is the entire mechanism behind why a second exposure, whether from a booster or the actual pathogen, typically produces a faster, stronger, more effective immune response than the body\'s very first encounter with something new.',
-        categoryNames: ['Science', 'Health'],
-    },
-    {
-        authorUsername: 'kabir',
-        title: 'Understanding Quantum Computing Without the Hype',
-        body: "Quantum computing coverage tends to swing between two unhelpful extremes: breathless hype suggesting it will imminently solve every hard computational problem, or dismissive skepticism that it's all overblown marketing. The more accurate, less exciting picture sits firmly in between.\n\nQuantum computers aren't simply faster classical computers — they're a fundamentally different computational model, genuinely well suited to a narrow set of problems like certain kinds of optimization and molecular simulation, while offering no meaningful advantage at all for most everyday computing tasks like browsing the web or running a spreadsheet. The realistic near-term impact is narrower and more specialized than the popular narrative suggests, even as the underlying research remains a genuinely exciting frontier of physics.",
-        categoryNames: ['Science', 'Technology'],
-    },
-    {
         authorUsername: 'mitu',
         title: 'Why Bees Are More Important Than You Think',
         body: 'Bees get talked about often enough in a general "save the bees" framing that it\'s easy to lose sight of just how concretely important they are — a substantial share of global food crops depend at least partly on pollination by bees and other insects, not as a nice-to-have, but as a genuine requirement for reliable yields.\n\nColony collapse and general pollinator decline stem from a combination of factors working together — pesticide exposure, habitat loss, disease, and climate-driven changes in flowering timing — rather than any single cause, which is exactly why the problem has proven so stubbornly difficult to fully solve with any one intervention. It\'s a rare case where an unglamorous insect turns out to be genuinely load-bearing for a meaningful fraction of the global food supply.',
@@ -251,18 +215,6 @@ const storySeeds = [
         authorUsername: 'farhan',
         title: 'Understanding Index Funds in Plain English',
         body: 'An index fund is, at its core, a fairly simple idea dressed up in intimidating financial jargon: instead of trying to pick individual winning stocks, you buy a small slice of an entire market index, like the S&P 500, all at once, through a single investment.\n\nThe appeal isn\'t excitement — it\'s consistency and cost. Decades of data consistently show that the large majority of actively managed funds, run by professional stock-pickers, fail to beat a simple low-cost index fund over long time horizons, largely because of the significantly higher fees active management typically charges. For most long-term investors, "boring and cheap" has repeatedly outperformed "exciting and expensive," which is precisely why index funds have become the default recommendation across most mainstream financial advice.',
-        categoryNames: ['Finance', 'Education'],
-    },
-    {
-        authorUsername: 'mitu',
-        title: 'The Psychology of Impulse Spending',
-        body: "Impulse spending rarely has much to do with a genuine, carefully considered need for the item being purchased — it's far more often a response to an emotional state, whether that's stress, boredom, or simply the small dopamine hit that comes from the act of buying something new.\n\nRetailers understand this dynamic extremely well, which is precisely why so much of modern e-commerce design — one-click checkout, limited-time countdown timers, algorithmically personalized recommendations — is specifically engineered to shorten the gap between impulse and purchase as much as technically possible. A simple, deliberately imposed waiting period before any non-essential purchase, even something as short as twenty-four hours, reliably filters out a surprising fraction of purchases that, on reflection the next morning, no longer feel worth the money.",
-        categoryNames: ['Finance', 'Lifestyle'],
-    },
-    {
-        authorUsername: 'nusrat',
-        title: 'A Beginner\u2019s Guide to Reading a Balance Sheet',
-        body: "A balance sheet can look intimidating at first glance, but the underlying structure is genuinely simple once you know what you're actually looking at: it's a snapshot, at one specific point in time, of what a company owns (assets), what it owes (liabilities), and what's genuinely left over for its owners (equity).\n\nThe single most useful habit for a beginner isn't memorizing every individual line item, but developing a feel for the relationships between the major sections — how much of the company's assets are financed by debt versus by equity, for instance, is often more immediately revealing about the health and risk profile of a business than any single number examined entirely in isolation.",
         categoryNames: ['Finance', 'Education'],
     },
 ];
