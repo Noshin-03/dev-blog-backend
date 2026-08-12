@@ -14,6 +14,7 @@ export class ListStoryDTO {
     public readonly id: string;
     public readonly title: string;
     public readonly createdAt: Date;
+    public readonly summary: string | null;
     public readonly author?: { name: string; username: string };
     public readonly categories?: { id: string; name: string }[];
 
@@ -21,6 +22,7 @@ export class ListStoryDTO {
         this.id = story.storyId;
         this.title = story.title;
         this.createdAt = story.createdAt;
+        this.summary = story.summary;
         if (story.user) {
             this.author = {
                 name: story.user.name,
