@@ -59,3 +59,33 @@ export const verifyPasswordChangeToken = (
 ): PasswordChangeTokenPayload => {
     return jwt.verify(token, env.JWT_SECRET) as PasswordChangeTokenPayload;
 };
+
+export type NewsletterTokenPurpose =
+    'newsletter-confirm' | 'newsletter-unsubscribe';
+
+export interface NewsletterTokenPayload {
+    email: string;
+    purpose: NewsletterTokenPurpose;
+}
+
+// Reuses EMAIL_JWT_SECRET (same trust boundary as email verification) instead
+// of introducing a new env var. Confirm links expire quickly like other
+// email-verification links; unsubscribe links are long-lived since they're
+// mailed out with every newsletter and should keep working.
+export const signNewsletterToken = (
+    email: string,
+    purpose: NewsletterTokenPurpose,
+): string => {
+    return jwt.sign({ email, purpose }, env.EMAIL_JWT_SECRET, {
+        expiresIn:
+            purpose === 'newsletter-confirm'
+                ? env.PASSWORD_JWT_EXPIRATION
+                : '365d',
+    });
+};
+
+export const verifyNewsletterToken = (
+    token: string,
+): NewsletterTokenPayload => {
+    return jwt.verify(token, env.EMAIL_JWT_SECRET) as NewsletterTokenPayload;
+};

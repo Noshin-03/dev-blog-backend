@@ -53,7 +53,6 @@ model Story {
   autoSummarize      Boolean   @default(true)  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
   categories  StoryCategory[]
 
   user User @relation(fields: [userId], references: [id])
@@ -81,4 +80,18 @@ model StoryCategory {
 
   @@id([storyId, categoryId])
   @@map("story_categories")
+}
+
+model NewsletterSubscriber {
+  id          String             @id @default(uuid())
+  email       String             @unique
+  status      NewsletterStatus   @default(PENDING)
+  confirmedAt DateTime?
+  createdAt   DateTime           @default(now())
+}
+
+enum NewsletterStatus {
+  PENDING
+  CONFIRMED
+  UNSUBSCRIBED
 }

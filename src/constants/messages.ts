@@ -27,4 +27,10 @@ export enum Messages {
     PASSWORD_INVALID = 'New password must be different from the current password',
     PASSWORD_CHANGE_EMAIL_SENT = 'Mail is sent with change password link',
     FORBIDDEN = 'You can not do this',
+    NEWSLETTER_CONFIRMATION_SENT = "If that email isn't already subscribed, a confirmation link has been sent",
+    NEWSLETTER_ALREADY_CONFIRMED = "You're already subscribed",
+    NEWSLETTER_CONFIRMED = 'Subscription confirmed — welcome aboard!',
+    NEWSLETTER_UNSUBSCRIBED = 'You have been unsubscribed',
+    NEWSLETTER_TOKEN_INVALID = 'Invalid or expired confirmation link',
+    NEWSLETTER_SUBSCRIBER_NOT_FOUND = 'Subscriber not found',
 }

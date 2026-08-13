@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 import { env } from '../config/env';
-import { baseEmailTemplate, emailButton } from './emailTemplate';
+import { baseEmailTemplate, emailButton, escapeHtml } from './emailTemplate';
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -59,6 +59,60 @@ export const sendPasswordChangeEmail = async (
         from: `"DevBlog" <${env.GMAIL}>`,
         to,
         subject: 'Change your DevBlog password',
+        html,
+    });
+};
+
+export const sendNewsletterConfirmationEmail = async (
+    to: string,
+    token: string,
+): Promise<void> => {
+    const confirmUrl = `${env.CLIENT_URL}/newsletter/confirm/${token}`;
+
+    const html = baseEmailTemplate(
+        'Confirm your subscription',
+        `
+        <p>Thanks for subscribing to the DevBlog newsletter!</p>
+        <p>Click the button below to confirm your email and start getting new stories in your inbox.</p>
+        ${emailButton(confirmUrl, 'Confirm Subscription')}
+
+        <p>If you didn't request this, you can safely ignore this email.</p>
+        `,
+    );
+
+    await transporter.sendMail({
+        from: `"DevBlog" <${env.GMAIL}>`,
+        to,
+        subject: 'Confirm your DevBlog newsletter subscription',
+        html,
+    });
+};
+
+export const sendNewStoryNotificationEmail = async (
+    to: string,
+    story: { title: string; summary: string | null; storyId: string },
+    unsubscribeToken: string,
+): Promise<void> => {
+    const storyUrl = `${env.CLIENT_URL}/stories/${story.storyId}`;
+    const unsubscribeUrl = `${env.CLIENT_URL}/newsletter/unsubscribe/${unsubscribeToken}`;
+
+    const html = baseEmailTemplate(
+        'New story on DevBlog',
+        `
+        <h3 style="margin-bottom: 4px;">${escapeHtml(story.title)}</h3>
+        ${story.summary ? `<p style="color: #6b7280;">${escapeHtml(story.summary)}</p>` : ''}
+        ${emailButton(storyUrl, 'Read the story')}
+
+        <p style="font-size: 12px; color: #6b7280; margin-top: 24px;">
+            Don't want these emails? <a href="${unsubscribeUrl}" style="color: #6b7280;">Unsubscribe</a>
+        </p>
+        `,
+    );
+
+    await transporter.sendMail({
+        from: `"DevBlog" <${env.GMAIL}>`,
+        to,
+        subject: `New story: ${story.title}`,
         html,
     });
 };

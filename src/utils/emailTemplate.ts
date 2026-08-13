@@ -1,3 +1,13 @@
+// Story titles/summaries are user-generated, so unlike the verification
+// links elsewhere in this file, they need escaping before going into HTML.
+export const escapeHtml = (value: string): string =>
+    value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
 const BRAND_NAME = 'DevBlog';
 const BRAND_COLOR = '#4F46E5';
 const TEXT_COLOR = '#111827';

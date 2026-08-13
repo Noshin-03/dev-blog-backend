@@ -37,6 +37,12 @@
       "read": true,
       "update": true,
       "delete": true
+    },
+    "newsletter": {
+      "create": false,
+      "read": true,
+      "update": false,
+      "delete": false
     }
   }
 }

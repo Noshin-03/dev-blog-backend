@@ -11,8 +11,10 @@ import { NotFoundError } from '../common/errorsClass';
 import { StoryQueryParams } from '../schemas/querySchema';
 import { JwtPayload } from '../utils/jwt';
 import { generateStorySummary } from '../services/aiService';
+import { NewsletterService } from './newsLetterService';
 
 const storyRepository = new StoryRepository(prisma);
+const newsletterService = new NewsletterService();
 
 export class StoryService {
     async createStory(
@@ -26,6 +28,15 @@ export class StoryService {
             await storyRepository.storeSummary(story.storyId, summary);
             story.summary = summary;
         }
+
+        // Fire-and-forget: newsletter delivery should never block or fail
+        // the story creation response. Every new story counts as "published"
+        // since this app has no separate draft state.
+        void newsletterService.notifySubscribersOfNewStory({
+            storyId: story.storyId,
+            title: story.title,
+            summary: story.summary,
+        });
 
         return new StoryResponseDTO(story);
     }
