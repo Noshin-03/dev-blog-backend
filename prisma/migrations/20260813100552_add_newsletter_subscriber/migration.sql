@@ -7,9 +7,6 @@
 -- CreateEnum
 CREATE TYPE "NewsletterStatus" AS ENUM ('PENDING', 'CONFIRMED', 'UNSUBSCRIBED');
 
--- AlterTable
-ALTER TABLE "stories" DROP COLUMN "imageUrl";
-
 -- CreateTable
 CREATE TABLE "NewsletterSubscriber" (
     "id" TEXT NOT NULL,
