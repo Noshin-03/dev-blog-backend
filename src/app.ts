@@ -10,7 +10,7 @@ const app = express();
 
 app.use(
     cors({
-        origin: 'https://dev-frontend-murex.vercel.app/',
+        origin: 'https://dev-frontend-murex.vercel.app',
         //origin: process.env.CLIENT_URL,
         credentials: true,
     }),
