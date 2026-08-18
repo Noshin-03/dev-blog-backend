@@ -1,16 +1,34 @@
-import nodemailer from 'nodemailer';
+import Mailjet from 'node-mailjet';
 import { env } from '../config/env';
 import { baseEmailTemplate, emailButton, escapeHtml } from './emailTemplate';
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    port: 587,
-    secure: false,
-    auth: {
-        user: env.GMAIL,
-        pass: env.MAIL_PASSWORD,
-    },
-});
+const mailjet = Mailjet.apiConnect(env.MAILJET_API_KEY, env.MAILJET_SECRET_KEY);
+
+type SendMailParams = {
+    to: string;
+    subject: string;
+    html: string;
+};
+
+const sendMail = async ({
+    to,
+    subject,
+    html,
+}: SendMailParams): Promise<void> => {
+    await mailjet.post('send', { version: 'v3.1' }).request({
+        Messages: [
+            {
+                From: {
+                    Email: env.GMAIL,
+                    Name: 'DevBlog',
+                },
+                To: [{ Email: to }],
+                Subject: subject,
+                HTMLPart: html,
+            },
+        ],
+    });
+};
 
 export const sendVerificationEmail = async (
     to: string,
@@ -29,8 +47,7 @@ export const sendVerificationEmail = async (
         `,
     );
 
-    await transporter.sendMail({
-        from: `"DevBlog" <${env.GMAIL}>`,
+    await sendMail({
         to,
         subject: 'Verify your DevBlog email address',
         html,
@@ -55,8 +72,7 @@ export const sendPasswordChangeEmail = async (
         `,
     );
 
-    await transporter.sendMail({
-        from: `"DevBlog" <${env.GMAIL}>`,
+    await sendMail({
         to,
         subject: 'Change your DevBlog password',
         html,
@@ -80,8 +96,7 @@ export const sendNewsletterConfirmationEmail = async (
         `,
     );
 
-    await transporter.sendMail({
-        from: `"DevBlog" <${env.GMAIL}>`,
+    await sendMail({
         to,
         subject: 'Confirm your DevBlog newsletter subscription',
         html,
@@ -109,8 +124,7 @@ export const sendNewStoryNotificationEmail = async (
         `,
     );
 
-    await transporter.sendMail({
-        from: `"DevBlog" <${env.GMAIL}>`,
+    await sendMail({
         to,
         subject: `New story: ${story.title}`,
         html,
@@ -128,8 +142,7 @@ export const sendPasswordChangedNotification = async (
         `,
     );
 
-    await transporter.sendMail({
-        from: `"DevBlog" <${env.GMAIL}>`,
+    await sendMail({
         to,
         subject: 'Your DevBlog password was changed',
         html,

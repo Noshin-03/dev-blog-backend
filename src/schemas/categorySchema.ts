@@ -17,7 +17,12 @@ export const createCategorySchema = z.object({
                 CategoryValidation.MAX,
                 `Name must be at most ${CategoryValidation.MAX} characters`,
             ),
-        description: z.string().optional(),
+        description: z
+            .string()
+            .max(CategoryValidation.MAX)
+            .nullable()
+            .optional()
+            .transform((val) => val ?? undefined),
     }),
 });
 

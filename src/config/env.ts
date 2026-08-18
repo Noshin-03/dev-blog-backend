@@ -30,4 +30,6 @@ export const env = {
     SUMMARY_MAX_INPUT_CHARS: Number(
         process.env.SUMMARY_MAX_INPUT_CHARS ?? 5000,
     ),
+    MAILJET_API_KEY: required('MAILJET_API_KEY'),
+    MAILJET_SECRET_KEY: required('MAILJET_SECRET_KEY'),
 } as const;
