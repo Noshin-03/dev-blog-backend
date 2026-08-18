@@ -10,8 +10,8 @@ const app = express();
 
 app.use(
     cors({
-        //origin: 'https://dev-blog-frontend-pi.vercel.app',
-        origin: process.env.CLIENT_URL,
+        origin: 'https://dev-blog-frontend-pi.vercel.app',
+        //origin: process.env.CLIENT_URL,
         credentials: true,
     }),
 );
