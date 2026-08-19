@@ -110,17 +110,32 @@ export class UserService {
         id: string,
         data: UpdateProfileDTO,
     ): Promise<ProfileResponseDTO> {
+        const currentUser = await userRepository.getUserById(id);
+
+        if (!currentUser) {
+            throw new Error('User not found');
+        }
+
+        const emailChanged =
+            data.email !== undefined &&
+            data.email.toLowerCase() !== currentUser.email.toLowerCase();
+
         const { isVerified } = await this.checkUpdateConflicts(id, data);
 
-        const updateData = {
+        const updateData: UpdateUserDTO = {
             ...data,
-            ...(isVerified !== undefined && { isVerified }),
+            ...(emailChanged
+                ? { isVerified: false }
+                : isVerified !== undefined
+                  ? { isVerified }
+                  : {}),
         };
 
         const updated = await userRepository.update(id, updateData);
 
-        if (isVerified === false) {
+        if (emailChanged) {
             const emailToken = signEmailToken(updated.id);
+
             await sendVerificationEmail(updated.email, emailToken);
         }
 
